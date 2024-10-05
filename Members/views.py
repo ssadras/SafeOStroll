@@ -74,15 +74,19 @@ class LoginView(View):
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON"}, status=400)
 
-        username = data.get('username')
+        email = data.get('username')
         password = data.get('password')
 
         # Validate input
-        if not username or not password:
+        if not email or not password:
             return JsonResponse({"error": "Username and password are required"}, status=400)
 
+        print(email)
+
         # Authenticate the user
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, username=email, password=password)
+
+        print(user)
 
         if user is not None:
             # Log the user in
