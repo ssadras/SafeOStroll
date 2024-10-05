@@ -8,19 +8,17 @@ const HereMap = () => {
     const map = initializeMap();
 
     // Resize the map when the window size changes
-    window.addEventListener('resize', () => {
+    const handleResize = () => {
       if (map) {
         map.getViewPort().resize();
       }
-    });
+    };
+
+    window.addEventListener('resize', handleResize);
 
     return () => {
       // Cleanup the event listener on component unmount
-      window.removeEventListener('resize', () => {
-        if (map) {
-          map.getViewPort().resize();
-        }
-      });
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -84,11 +82,59 @@ const HereMap = () => {
     return map; // Return the map instance
   };
 
+  const handleDistress = () => {
+    console.log('Distress');
+  };
+
   return (
+    
     <div
-      ref={mapRef}
-      style={{ width: '100%', height: '100vh', position: 'absolute', top: 0, left: 0 }} // Full viewport size
-    ></div>
+  style={{
+    display: 'flex', // Use Flexbox for centering
+    flexDirection: 'column', // Stack the map and button vertically
+    justifyContent: 'center', // Center-align vertically
+    alignItems: 'center', // Center-align horizontally
+    width: '100%',
+    height: '100vh', // Full viewport height
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  }}
+>
+<h1 style={{ color: '#ff5959' }}>Here Map</h1>
+  <div
+    ref={mapRef}
+    style={{
+      width: '100%', // Full width
+      maxWidth: '1000px', // Maximum width of 1000px for the map
+      height: '700px', // Fixed height of 700px for the map
+      border: '2px solid #ccc',
+      borderRadius: '10px',
+      position: 'relative',
+      boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.1)',
+      overflow: 'hidden',
+    }}
+  ></div>
+  
+  <button
+    onClick={handleDistress}
+    style={{
+      marginTop: '20px', // Space between the map and the button
+      padding: '10px 20px', // Padding inside the button
+      fontSize: '1rem', // Font size for the button text
+      backgroundColor: '#ff5959', // Red color for the distress button
+      color: '#fff', // White text color
+      border: 'none', // Remove border
+      borderRadius: '8px', // Rounded corners
+      cursor: 'pointer', // Change cursor on hover
+      transition: 'background-color 0.3s ease',
+    }}
+  >
+    Distress
+  </button>
+</div>
+
+
   );
 };
 
