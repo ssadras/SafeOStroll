@@ -13,11 +13,11 @@ from Members.models import Member, MemberLocation, University
 
 # Create your views here.
 class SignupView(View):
-    def post(self, request:WSGIRequest):
-        if request.POST:
-            data = request.POST
-        else:
+    def post(self, request: WSGIRequest):
+        try:
             data = json.loads(request.body.decode('utf-8'))
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
 
         print(data.keys())
 
@@ -69,10 +69,10 @@ class SignupView(View):
 
 class LoginView(View):
     def post(self, request):
-        if request.POST:
-            data = request.POST
-        else:
+        try:
             data = json.loads(request.body.decode('utf-8'))
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
 
         username = data.get('username')
         password = data.get('password')
