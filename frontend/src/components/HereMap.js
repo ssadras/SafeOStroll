@@ -31,3 +31,5 @@ function initializeMap() {
 
 // Call the initializeMap function when the window loads
 window.onload = initializeMap;
+
+export default Dashboard;
