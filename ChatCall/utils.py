@@ -2,6 +2,8 @@ import openai
 from django.conf import settings
 
 def generate_response(input_text):
+    # Generates a response from the OpenAI API
+
     try:
         openai.api_key = settings.SECRET_AI_KEY
 
@@ -15,5 +17,38 @@ def generate_response(input_text):
         
         bot_message = response.choices[0].message.content
         return bot_message
+    except Exception as e:
+        return str(e)
+
+
+def speech_to_text(audio_bytes):
+    # Converts an audio file to text using the OpenAI Whisper API
+
+    try:
+        openai.api_key = settings.SECRET_AI_KEY
+
+        audio_file = openai.Audio.create(
+            file=audio_bytes,
+            model="whisper-1"
+        )
+
+        transcript = audio_file['text']
+        return transcript
+    except Exception as e:
+        return str(e)
+    
+
+def text_to_speech(text_input, model="tts-1"):
+    try:
+        openai.api_key = settings.SECRET_AI_KEY
+
+        # Call the OpenAI TTS API
+        response = openai.Audio.create(
+            text=text_input,
+            model=model  # Choose between "tts-1" (speed) or "tts-1-hd" (quality)
+        )
+
+        audio_content = response['audio']  # Extract the generated audio data
+        return audio_content
     except Exception as e:
         return str(e)
