@@ -17,3 +17,14 @@ class GetNewNotifications(View):
             notification.save()
 
         return res
+
+
+class AddNotification(View):
+    def post(self, request):
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        member_id = request.POST.get('member_id')
+
+        Notification.objects.create(title=title, content=content, member_id=member_id)
+
+        return JsonResponse({'status': 'success'})
