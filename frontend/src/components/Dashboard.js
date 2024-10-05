@@ -30,7 +30,7 @@ function Dashboard() {
           <div className="card voice-card" onClick={goToCall}>
             <h4>Voice Helper</h4>
             <p>Let's find new things using voice recording</p>
-            <button className="start-btn">Start Recording</button>
+            <button className="start-btn">Start Call</button>
           </div>
 
           <div className="card" onClick={goToMap}>
