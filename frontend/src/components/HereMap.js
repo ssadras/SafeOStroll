@@ -132,6 +132,10 @@ const HereMap = () => {
   >
     Distress
   </button>
+  <footer style={{ marginTop: '20px' }}>
+    <p>
+    </p>
+    </footer>
 </div>
 
 
