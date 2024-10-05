@@ -1,0 +1,102 @@
+.signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.signup-form {
+    background-color: #23272a;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 320px;
+    
+}
+
+/* Align the logo to center */
+.app-logo {
+    display: block; /* Make sure the image behaves as a block element */
+    margin-left: auto; /* Push the logo from the left */
+    margin-right: auto; /* Push the logo from the right */
+    margin-bottom: 20px; /* Add space between the logo and the form fields */
+    width: 100px; /* Adjust the width of the logo as needed */
+  }
+  
+.signup-form h2 {
+    text-align: center;
+    color: #fff; /* White text for the title */
+    margin-bottom: 20px;
+}
+
+.signup-form .form-group {
+    margin-bottom: 15px;
+}
+
+.signup-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #fff; /* White text for labels */
+}
+
+.signup-form input, .signup-form select {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #444; /* Darker input background */
+    color: #fff; /* White input text */
+}
+
+.signup-form input::placeholder {
+    color: #aaa; /* Lighter placeholder text */
+}
+
+.signup-form .signup-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #5a67d8; /* Blue button color similar to login */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.signup-form .signup-button:hover {
+    background-color: #4c51bf;
+}
+
+.signup-form .form-group select {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #444;
+    color: #fff;
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+    .signup-form {
+        width: 90%;
+    }
+}
+
+@media (max-width: 480px) {
+    .signup-container {
+        padding: 10px;
+    }
+
+    .signup-form {
+        padding: 15px;
+    }
+
+    .signup-button {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+}
