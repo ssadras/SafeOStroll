@@ -6,7 +6,7 @@ def generate_response(input_text):
         openai.api_key = settings.SECRET_AI_KEY  # Set your OpenAI API key
 
         # Make a call to the OpenAI API
-        response = openai.ChatCompletion.create(
+        response = openai.chat.completions.create(
             model="gpt-3.5-turbo",  # Specify the model you want to use
             messages=[
                 {"role": "user", "content": input_text}
