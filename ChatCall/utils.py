@@ -7,7 +7,7 @@ def generate_response(input_text):
 
         # Make a call to the OpenAI API
         response = openai.chat.completions.create(
-            model="gpt-3.5-turbo",  # Specify the model you want to use
+            model="gpt-4o",  # Specify the model you want to use
             messages=[
                 {"role": "user", "content": input_text}
             ]
