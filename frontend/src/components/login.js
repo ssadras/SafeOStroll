@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Login form submitted', { email, password });
     // You can add your form submission logic here (API calls, validations)
+    navigate('/dashboard'); // Redirect to dashboard after login
   };
 
   return (

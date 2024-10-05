@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import Login from './components/login';
 import Signup from './components/signup';
+import Dashboard from './components/Dashboard';
 import './App.css';
 
-function App() {
+function Auth() {
   const [isLogin, setIsLogin] = useState(true);
 
   const toggleAuthMode = () => {
@@ -22,6 +24,17 @@ function App() {
         </p>
       </header>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Auth />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </Router>
   );
 }
 
