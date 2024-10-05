@@ -9,9 +9,21 @@ const CallComponent = () => {
   const silenceTimeoutRef = useRef(null);
   const mediaRecorderRef = useRef(null); // Use a ref to store the MediaRecorder
 
-  // Initialize WebSocket connection when the component mounts
+  // Initialize WebSocket connection and start recording when the component mounts
   useEffect(() => {
     const ws = new WebSocket('ws://localhost:8000/ws/call/');
+    ws.onopen = () => {
+      console.log('WebSocket connection opened');
+    };
+
+    ws.onerror = (error) => {
+      console.error('WebSocket error', error);
+    };
+
+    ws.onclose = () => {
+      console.log('WebSocket connection closed');
+    };
+
     setSocket(ws);
 
     ws.onmessage = (event) => {
@@ -19,9 +31,8 @@ const CallComponent = () => {
       playAudio(event.data);
     };
 
-    ws.onclose = () => {
-      console.log('WebSocket connection closed');
-    };
+    // Start recording automatically when component mounts
+    startRecording();
 
     return () => {
       ws.close(); // Cleanup WebSocket connection on component unmount
@@ -31,40 +42,55 @@ const CallComponent = () => {
 
   const startRecording = async () => {
     if (isRecording) {
-      // If already recording, stop the recording
       mediaRecorderRef.current.stop();
       setIsRecording(false);
-      return; // Exit the function early
+      return;
     }
 
     setIsRecording(true);
 
-    // Capture audio from user's microphone
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const newMediaRecorder = new MediaRecorder(stream);
-    mediaRecorderRef.current = newMediaRecorder; // Store the MediaRecorder in the ref
+    try {
+      // Capture audio from user's microphone
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const newMediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = newMediaRecorder;
 
-    const chunks = [];
-    newMediaRecorder.ondataavailable = (event) => {
-      chunks.push(event.data);
-      // Send audio data to the WebSocket server
-      if (socket && isRecording) {
-        socket.send(event.data); // Send each audio chunk to the server
-      }
-    };
+      const chunks = [];
 
-    newMediaRecorder.onstop = () => {
-      // Combine the chunks into one audio blob when recording stops
-      const audioBlob = new Blob(chunks, { type: 'audio/webm' }); // Adjust the MIME type as needed
-      if (socket) {
-        socket.send(audioBlob); // Send the final audio blob to the server
-      }
-      setIsRecording(false);
-    };
+      // Capture audio chunks
+      newMediaRecorder.ondataavailable = (event) => {
+        chunks.push(event.data);
+        console.log('Chunk received:', event.data);
+        
+        // Send each chunk to the server if the WebSocket is open
+        if (socket && socket.readyState === WebSocket.OPEN && isRecording) {
+          socket.send(event.data);
+          console.log('Chunk sent to WebSocket');
+        } else {
+          console.error('WebSocket is not open');
+        }
+      };
 
-    newMediaRecorder.start();
+      newMediaRecorder.onstop = () => {
+        const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+        if (socket && socket.readyState === WebSocket.OPEN) {
+          socket.send(audioBlob);
+          console.log('Final audio blob sent');
+        }
+        setIsRecording(false);
+      };
 
-    // Set up audio context and analyser for silence detection
+      newMediaRecorder.start();
+      console.log('Recording started');
+
+      // Set up silence detection
+      setupSilenceDetection(stream);
+    } catch (error) {
+      console.error('Error starting recording:', error);
+    }
+  };
+
+  const setupSilenceDetection = (stream) => {
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const analyser = audioContext.createAnalyser();
     const source = audioContext.createMediaStreamSource(stream);
@@ -75,50 +101,44 @@ const CallComponent = () => {
 
     const checkSilence = () => {
       analyser.getByteFrequencyData(dataArray);
-      // Calculate the average volume on a scale of 0 to 1
-      const averageVolume = dataArray.reduce((sum, value) => sum + value, 0) / dataArray.length / 255; // Normalize to 0-1 scale
-
-      console.log('Checking silence, Average Volume:', averageVolume);
+      const averageVolume = dataArray.reduce((sum, value) => sum + value, 0) / dataArray.length / 255;
+      console.log('Average Volume:', averageVolume);
 
       if (averageVolume < silenceThreshold) {
-        // If silence is detected, start a timer
         if (!silenceTimeoutRef.current) {
           silenceTimeoutRef.current = setTimeout(() => {
             console.log('Silence detected, stopping recording...');
             mediaRecorderRef.current.stop(); // Stop recording after the silence duration
-            silenceTimeoutRef.current = null; // Reset timeout reference
+            silenceTimeoutRef.current = null;
           }, silenceDuration);
         }
       } else {
-        // If not silent, clear the timeout
         if (silenceTimeoutRef.current) {
           clearTimeout(silenceTimeoutRef.current);
-          silenceTimeoutRef.current = null; // Reset timeout reference
+          silenceTimeoutRef.current = null;
         }
       }
 
-      requestAnimationFrame(checkSilence); // Continue checking for silence
+      requestAnimationFrame(checkSilence);
     };
 
-    checkSilence(); // Start the silence detection
+    checkSilence(); // Start checking for silence
   };
 
   const playAudio = (audioData) => {
-    const audioBlob = new Blob([audioData], { type: 'audio/webm' }); // Adjust MIME type if necessary
+    const audioBlob = new Blob([audioData], { type: 'audio/webm' });
     const audioUrl = URL.createObjectURL(audioBlob);
     
     if (audioRef.current) {
       audioRef.current.src = audioUrl;
-      audioRef.current.play(); // Play the audio response from the backend
+      audioRef.current.play();
     }
   };
 
   return (
     <div>
       <h2>Call AI (WebSocket Enabled)</h2>
-      <button onClick={startRecording}>
-        {isRecording ? 'Stop Recording' : 'Start Call'}
-      </button>
+      {/* Recording starts automatically when navigated */}
       <audio ref={audioRef} controls />
     </div>
   );
