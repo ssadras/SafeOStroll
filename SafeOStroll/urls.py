@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/member/', include('Members.urls', namespace='Members')),
     path('api/chat/', include('ChatCall.urls', namespace='ChatCall')),
-    path('ws/call/', CallSystem.as_asgi()),
+    # path('ws/call/', CallSystem.as_asgi()),
 ]
 
 websocket_urlpatterns = [
