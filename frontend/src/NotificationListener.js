@@ -12,8 +12,10 @@ const NotificationListener = () => {
             if (!userId) return;  // If userId is not available, skip the API call
 
             try {
-                const response = await axios.get(`http://localhost:8000/api/notification/get_new/`, {
-                    params: { user_id: userId }  // Send the user_id as a query parameter
+                // Send a POST request with user_id in the body
+                console.log("userId:", userId);
+                const response = await axios.post('http://localhost:8000/api/notification/get_new/', {
+                    user_id: userId  // Send user_id in the request body
                 });
                 
                 const { notifications } = response.data;
@@ -50,3 +52,5 @@ const NotificationListener = () => {
         </div>
     );
 };
+
+export default NotificationListener;
