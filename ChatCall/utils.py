@@ -1,10 +1,18 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
-model_name = "microsoft/DialoGPT-medium"
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForCausalLM.from_pretrained(model_name)
+import openai
+from django.conf import settings
 
 def generate_response(input_text):
-    inputs = tokenizer.encode(input_text + tokenizer.eos_token, return_tensors='pt')
-    outputs = model.generate(inputs, max_length=1000, pad_token_id=tokenizer.eos_token_id)
-    return tokenizer.decode(outputs[:, inputs.shape[-1]:][0], skip_special_tokens=True)
+    try:
+        openai.api_key = settings.SECRET_AI_KEY  # Set your OpenAI API key
+
+        # Make a call to the OpenAI API
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",  # Specify the model you want to use
+            messages=[
+                {"role": "user", "content": input_text}
+            ]
+        )
+        bot_message = response['choices'][0]['message']['content']
+        return bot_message
+    except Exception as e:
+        return str(e)  # Return the error message in case of an exception
