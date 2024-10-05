@@ -1,14 +1,13 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { UserContext } from '../UserContext';  // Import the UserContext
-
+import { UserContext } from '../UserContext';
 import './Login.css';
 
-
 function Login() {
-  const [email, setEmail] = useState(''); // Using email as username
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { setUserId } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -16,16 +15,14 @@ function Login() {
     console.log('Login form submitted', { email, password });
 
     try {
-      // Send a POST request to the backend login endpoint
       const response = await axios.post('http://localhost:8000/api/member/login/', {
-        username: email, // Sending email as username
+        username: email,
         password: password,
       });
 
       if (response.status === 200) {
-        // Navigate to dashboard on successful login
         const userId = response.data.user_id;
-
+        console.log('Login successful. User ID:', userId);
         setUserId(userId);
 
         navigate('/dashboard');
