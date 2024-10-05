@@ -1,9 +1,24 @@
 /* General styles */
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #1e1e2e;
+    background: linear-gradient(135deg, #1e1e2e, #222038);
     margin: 0;
     padding: 0;
+    background-size: 200% 200%;
+    animation: gradientAnimation 10s ease infinite; /* Animated gradient */
+    height: 100vh;
+  }
+  
+  @keyframes gradientAnimation {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
   
   .dashboard-container {
@@ -32,9 +47,18 @@ body {
   }
   
   .app-logo {
-    width: 50px;
-    height: 50px;
+    margin-top: 10px;
+    width: 60px; /* Slightly larger logo */
+    height: 60px;
     margin-bottom: 20px;
+  }
+  
+
+  
+  h1 {
+    font-size: 2.5rem;
+    color: #ffffff;
+    text-shadow: 0px 0px 15px #3b3bb1; /* Add glowing text shadow */
   }
   
   .user-greeting h3 {
@@ -45,13 +69,14 @@ body {
   .user-greeting p {
     font-size: 1rem;
     color: #aaa;
+    text-shadow: 0px 0px 5px #aaa;
   }
   
   /* Action Cards */
   .action-cards {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
     align-items: center;
     width: 100%;
   }
@@ -65,35 +90,39 @@ body {
     transition: all 0.3s ease-in-out;
     width: 80%;
     max-width: 400px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    border: 2px solid transparent;
   }
   
-  /* Hover effect */
   .card:hover {
     background-color: #3b3b58;
     cursor: pointer;
+    box-shadow: 0px 5px 25px rgba(0, 0, 0, 0.4);
   }
   
-  /* Voice Card */
   .voice-card {
     background: linear-gradient(135deg, #3b3bb1, #68d8ff);
     color: white;
   }
   
-  /* Start button styling */
+  /* Glowing button effect */
   .start-btn {
     background-color: #ffffff;
     color: #3b3bb1;
     border: none;
-    padding: 10px 15px;
+    padding: 12px 20px;
     border-radius: 30px;
-    font-size: 0.9rem;
+    font-size: 1rem;
     margin-top: 15px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 10px #68d8ff, 0 0 20px #68d8ff, 0 0 30px #68d8ff; /* Glowing effect */
   }
   
   .start-btn:hover {
     background-color: #dedede;
+    box-shadow: 0 0 20px #3b3bb1, 0 0 30px #3b3bb1, 0 0 40px #3b3bb1; /* Stronger glow on hover */
   }
   
   /* Responsive Design for Smaller Screens */
@@ -131,3 +160,4 @@ body {
       font-size: 0.8rem;
     }
   }
+  
