@@ -1,16 +1,34 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Ensure you have axios imported
 import './Login.css'; // Importing the CSS file for styling
 
 function Login() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(''); // Using email as username
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Login form submitted', { email, password });
-    navigate('/dashboard');
+
+    try {
+      // Send a POST request to the backend login endpoint
+      const response = await axios.post('http://localhost:8000/api/member/login/', {
+        username: email, // Sending email as username
+        password: password,
+      });
+
+      if (response.status === 200) {
+        // Navigate to dashboard on successful login
+        navigate('/dashboard');
+      } else {
+        alert('Login failed');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert(error.response?.data?.error || 'Login failed. Please try again.');
+    }
   };
 
   return (
