@@ -116,11 +116,6 @@ class SetLocationView(View):
         if not member:
             return JsonResponse({"error": "User not found"}, status=404)
 
-        # get logged-in user
-        user = request.user
-        if user.id != member.user_id:
-            return JsonResponse({"error": "You are not authorized to perform this action"}, status=403)
-
         member_location = MemberLocation.objects.create(
             member=member,
             latitude=latitude,
@@ -161,17 +156,13 @@ class GetMembersAroundUser(View):
 
 class AskHelpNearbyMembers(View):
     def post(self, request):
-        user = request.user
 
-        user_id = user.id
+        user_id = request.POST.get('user_id')
 
         member = Member.objects.filter(user_id=user_id).first()
 
         if not member:
             return JsonResponse({"error": "User not found"}, status=404)
-
-        if user.id != member.user_id:
-            return JsonResponse({"error": "You are not authorized to perform this action"}, status=403)
 
         # get latitude and longitude from member last location (Logged in user)
         member_location = MemberLocation.objects.filter(member_id=member.id).order_by('-timestamp').first()

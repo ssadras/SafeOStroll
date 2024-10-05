@@ -6,6 +6,7 @@ from .utils import generate_response, speech_to_text, text_to_speech
 import mimetypes
 from django.http import HttpResponse
 
+
 @csrf_exempt  # Allow requests without CSRF token (for testing)
 def ai_chat_view(request):
     if request.method == 'POST':
@@ -70,7 +71,8 @@ def ai_stt(request):
         audio_file = request.FILES['audio']
 
         # Check for supported audio formats
-        if not audio_file.name.endswith(('.flac', '.m4a', '.mp3', '.mp4', '.mpeg', '.mpga', '.oga', '.ogg', '.wav', '.webm')):
+        if not audio_file.name.endswith(
+                ('.flac', '.m4a', '.mp3', '.mp4', '.mpeg', '.mpga', '.oga', '.ogg', '.wav', '.webm')):
             return JsonResponse({'error': 'Unsupported audio format.'}, status=400)
 
         try:

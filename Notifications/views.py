@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views import View
 
@@ -6,8 +7,15 @@ from Notifications.models import Notification
 
 # Create your views here.
 class GetNewNotifications(View):
-    def get(self, request):
-        notifications = Notification.objects.filter(member=request.user.member, seen=False).all()
+    def post(self, request):
+
+        user = request.user
+        # check user anonymous
+        if user.is_anonymous:
+            user_id = request.POST.get('user_id')
+            user = User.objects.get(id=user_id)
+
+        notifications = Notification.objects.filter(member=user.member, seen=False).all()
 
         res = JsonResponse({'notifications': list(notifications.values())})
 
