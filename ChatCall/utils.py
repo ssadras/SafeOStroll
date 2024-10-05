@@ -7,12 +7,14 @@ def generate_response(input_text):
 
         # Make a call to the OpenAI API
         response = openai.chat.completions.create(
-            model="gpt-4o",  # Specify the model you want to use
+            model="gpt-4o",  # Specify the correct model (like GPT-4 or GPT-3.5)
             messages=[
                 {"role": "user", "content": input_text}
             ]
         )
-        bot_message = response['choices'][0]['message']['content']
+        
+        # Correct way to access the message content
+        bot_message = response.choices[0].message['content']
         return bot_message
     except Exception as e:
         return str(e)  # Return the error message in case of an exception
