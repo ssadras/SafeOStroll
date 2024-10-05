@@ -1,23 +1,31 @@
+import json
+
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.handlers.wsgi import WSGIRequest
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 
-from Members.models import Member, MemberLocation
+from Members.models import Member, MemberLocation, University
 
 
 # Create your views here.
 class SignupView(View):
-    def post(self, request):
-        data = request.POST or request.json()
+    def post(self, request:WSGIRequest):
+        if request.POST:
+            data = request.POST
+        else:
+            data = json.loads(request.body.decode('utf-8'))
+
+        print(data.keys())
 
         full_name = data.get('full_name')
         email = data.get('email')
         password = data.get('password')
         phone = data.get('phone')
-        university_id = data.get('university_id')  # Expecting university_id from frontend
+        university = data.get('university_id')  # Expecting university name from frontend
         emergency_contact_phone = data.get('emergency_contact_phone')
         emergency_contact_name = data.get('emergency_contact_name')
 
@@ -30,6 +38,9 @@ class SignupView(View):
 
         if User.objects.filter(email=email).exists():
             return JsonResponse({"error": "Email already in use"}, status=400)
+
+        university = University.objects.get(name=university)
+        university_id = university.id
 
         # Create
         user = User.objects.create_user(
@@ -55,7 +66,11 @@ class SignupView(View):
 
 class LoginView(View):
     def post(self, request):
-        data = request.POST or request.json()
+        if request.POST:
+            data = request.POST
+        else:
+            data = json.loads(request.body.decode('utf-8'))
+
         username = data.get('username')
         password = data.get('password')
 
@@ -77,7 +92,11 @@ class LoginView(View):
 @login_required
 class SetLocationView(View):
     def post(self, request):
-        data = request.POST or request.json()
+        if request.POST:
+            data = request.POST
+        else:
+            data = json.loads(request.body.decode('utf-8'))
+
         user_id = data.get('user_id')
         latitude = data.get('latitude')
         longitude = data.get('longitude')
