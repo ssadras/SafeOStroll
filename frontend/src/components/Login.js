@@ -1,14 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-<<<<<<< HEAD
 import axios from 'axios';
 import { UserContext } from '../UserContext';
 import './Login.css';
-=======
-import axios from 'axios'; // Ensure you have axios imported
-import './Login.css'; // Importing the CSS file for styling
 import logo from './logo/logo.png';  // Import the logo
->>>>>>> 6a9762cb659c8fc6797448a20a7160ccd4ceb7ca
 
 function Login() {
   const [email, setEmail] = useState('');
