@@ -125,3 +125,65 @@ class SetLocationView(View):
         member_location.save()
 
         return JsonResponse({"success": "Location saved"}, status=201)
+
+
+class GetMembersAroundUser(View):
+    def post(self, request):
+        # get latitude and longitude from member last location (Logged in user)
+        user = request.user
+        member = Member.objects.filter(user_id=user.id).first()
+        member_location = MemberLocation.objects.filter(member_id=member.id).order_by('-timestamp').first()
+
+        if not member_location:
+            return JsonResponse({"error": "Location not found"}, status=404)
+
+        latitude = member_location.latitude
+        longitude = member_location.longitude
+
+        # get all members around the user
+        members = MemberLocation.objects.get_members_in_distance(latitude, longitude, 0.01)
+
+        # return members (Hide sensitive information)
+        members_data = []
+        for member in members:
+            members_data.append({
+                "full_name": member.member.full_name,
+                "latitude": member.latitude,
+                "longitude": member.longitude
+            })
+
+        return JsonResponse({"members": members_data}, status=200)
+
+
+class AskHelpNearbyMembers(View):
+    def post(self, request):
+        user = request.user
+
+        user_id = user.id
+
+        member = Member.objects.filter(user_id=user_id).first()
+
+        if not member:
+            return JsonResponse({"error": "User not found"}, status=404)
+
+        if user.id != member.user_id:
+            return JsonResponse({"error": "You are not authorized to perform this action"}, status=403)
+
+        # get latitude and longitude from member last location (Logged in user)
+        member_location = MemberLocation.objects.filter(member_id=member.id).order_by('-timestamp').first()
+
+        if not member_location:
+            return JsonResponse({"error": "Location not found"}, status=404)
+
+        latitude = member_location.latitude
+        longitude = member_location.longitude
+
+        # get all members around the user
+        members = MemberLocation.objects.get_members_in_distance(latitude, longitude, 0.01)
+
+        # send message to all members
+        for member in members:
+            # send message to member
+            pass
+
+        return JsonResponse({"success": "Message sent to nearby members"}, status=200)
