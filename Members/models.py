@@ -29,7 +29,13 @@ class University(models.Model):
         return self.name
 
 
-# Live location data of user
+class MemberLocationManager(models.Manager):
+    # Get members in a specific distance of a location
+    def get_members_in_distance(self, latitude, longitude, distance):
+        return self.filter(latitude__range=(latitude - distance, latitude + distance),
+                           longitude__range=(longitude - distance, longitude + distance))
+
+
 class MemberLocation(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
     latitude = models.FloatField()
