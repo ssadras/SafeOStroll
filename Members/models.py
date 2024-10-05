@@ -15,9 +15,26 @@ class Member(models.Model):
     emergency_contact_name = models.CharField(max_length=255, blank=True)
     is_verified = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.full_name
+
 
 class University(models.Model):
     name = models.CharField(max_length=255)
     latitude = models.FloatField()
     longitude = models.FloatField()
     emergency_phone = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.name
+
+
+# Live location data of user
+class MemberLocation(models.Model):
+    member = models.ForeignKey(Member, on_delete=models.CASCADE)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.member.full_name} - {self.latitude}, {self.longitude}"
