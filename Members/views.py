@@ -1,19 +1,23 @@
+import json
+
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.handlers.wsgi import WSGIRequest
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
-from django.views.decorators.csrf import csrf_exempt
 
 from Members.models import Member, MemberLocation
 
 
 # Create your views here.
-@csrf_exempt
 class SignupView(View):
-    def post(self, request):
-        data = request.POST or request.json()
+    def post(self, request:WSGIRequest):
+        if request.POST:
+            data = request.POST
+        else:
+            data = json.loads(request.body.decode('utf-8'))
 
         full_name = data.get('full_name')
         email = data.get('email')
@@ -55,10 +59,13 @@ class SignupView(View):
         return JsonResponse({"success": "User created"}, status=201)
 
 
-@csrf_exempt
 class LoginView(View):
     def post(self, request):
-        data = request.POST or request.json()
+        if request.POST:
+            data = request.POST
+        else:
+            data = json.loads(request.body.decode('utf-8'))
+
         username = data.get('username')
         password = data.get('password')
 
@@ -78,10 +85,13 @@ class LoginView(View):
 
 
 @login_required
-@csrf_exempt
 class SetLocationView(View):
     def post(self, request):
-        data = request.POST or request.json()
+        if request.POST:
+            data = request.POST
+        else:
+            data = json.loads(request.body.decode('utf-8'))
+
         user_id = data.get('user_id')
         latitude = data.get('latitude')
         longitude = data.get('longitude')
