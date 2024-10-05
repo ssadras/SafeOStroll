@@ -39,8 +39,11 @@ class SignupView(View):
         if User.objects.filter(email=email).exists():
             return JsonResponse({"error": "Email already in use"}, status=400)
 
-        university = University.objects.get(name=university)
-        university_id = university.id
+        try:
+            university = University.objects.get(name=university)
+            university_id = university.id
+        except Exception as e:
+            return JsonResponse({"error": "University not found"}, status=404)
 
         # Create
         user = User.objects.create_user(
