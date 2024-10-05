@@ -23,7 +23,7 @@ def ai_chat_view(request):
         if user_message:
             try:
                 openai.api_key = settings.SECRET_AI_KEY
-                # Use the updated API call
+                # Updated API call
                 response = openai.ChatCompletion.create(
                     model="gpt-3.5-turbo",
                     messages=[
@@ -34,4 +34,5 @@ def ai_chat_view(request):
                 return JsonResponse({'response': bot_message})
             except Exception as e:
                 return JsonResponse({'error': str(e)}, status=500)
+
     return JsonResponse({'error': 'Only POST requests are allowed.'}, status=405)
