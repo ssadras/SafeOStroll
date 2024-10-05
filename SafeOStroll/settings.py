@@ -23,6 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '***REMOVED***'
 SECRET_AI_KEY = '***REMOVED***'
 
+# #AI API KEY
+# SECRET_AI_KEY = 'sk-svcacct-8rUPUpYWT_54AHi2ibyabOd_dQKxBJjjLTiqc4EKl5Sc3UnghE0c0jHgpgEj8YVX2T3BlbkFJcPoHGgeHFQU1GLYHl-LIqSZqXNFObkzB8UnYVbF74m3Bc0xYZSu1tYvhm497yOfoAA'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -39,10 +42,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'channels',
+    'rest_framework',
 
     # Custom apps
     'ChatCall',
     'Members',
+
 ]
 
 MIDDLEWARE = [
