@@ -23,9 +23,12 @@ def ai_chat_view(request):
         if user_message:
             try:
                 openai.api_key = settings.SECRET_AI_KEY
+                # Use the updated API call
                 response = openai.ChatCompletion.create(
                     model="gpt-3.5-turbo",
-                    messages=[{"role": "user", "content": user_message}]
+                    messages=[
+                        {"role": "user", "content": user_message}
+                    ]
                 )
                 bot_message = response['choices'][0]['message']['content']
                 return JsonResponse({'response': bot_message})
