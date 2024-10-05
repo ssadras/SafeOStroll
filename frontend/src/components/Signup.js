@@ -32,11 +32,18 @@ function Signup() {
       emergency_contact_phone: emergencyPhoneNumber,
       password: password,
     };
-  
+    
+    // for Denugging
+    console.log(signupData);
+
     try {
       // Send a POST request to the backend signup endpoint
-      const response = await axios.post('http://localhost:8000/api/member/register/', signupData);
-  
+      const response = await axios.post(
+        'http://localhost:8000/api/member/register/', 
+        signupData, 
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+
       if (response.status === 201) {
         // Handle success, redirect to dashboard or show a success message
         console.log('Signup successful:', response.data);
