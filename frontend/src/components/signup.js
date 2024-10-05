@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Signup() {
   const [fullName, setFullName] = useState('');
@@ -9,6 +10,9 @@ function Signup() {
   const [emergencyPhoneNumber, setEmergencyPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const navigate = useNavigate();
+
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,7 +33,8 @@ function Signup() {
 
     console.log('Signup form submitted', signupData);
     // You can add your form submission logic here (API calls, validations)
-    
+    navigate('/dashboard'); // Redirect to dashboard after signup
+
   };
 
   return (
