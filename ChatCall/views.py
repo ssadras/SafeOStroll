@@ -4,13 +4,15 @@ from django.shortcuts import render
 import openai
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+
 
 @csrf_exempt  # Allow requests without CSRF token (for testing)
 def ai_chat_view(request):
     if request.method == 'POST':
         user_message = request.POST.get('message', '')
         if user_message:
-            openai.api_key = SECRET_AI_KEY
+            openai.api_key = settings.SECRET_AI_KEY
             response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": user_message}]
