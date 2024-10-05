@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 
-from Members.models import Member, MemberLocation
+from Members.models import Member, MemberLocation, University
 
 
 # Create your views here.
@@ -19,11 +19,13 @@ class SignupView(View):
         else:
             data = json.loads(request.body.decode('utf-8'))
 
+        print(data.keys())
+
         full_name = data.get('full_name')
         email = data.get('email')
         password = data.get('password')
         phone = data.get('phone')
-        university_id = data.get('university_id')  # Expecting university_id from frontend
+        university = data.get('university_id')  # Expecting university name from frontend
         emergency_contact_phone = data.get('emergency_contact_phone')
         emergency_contact_name = data.get('emergency_contact_name')
 
@@ -36,6 +38,9 @@ class SignupView(View):
 
         if User.objects.filter(email=email).exists():
             return JsonResponse({"error": "Email already in use"}, status=400)
+
+        university = University.objects.get(name=university)
+        university_id = university.id
 
         # Create
         user = User.objects.create_user(
