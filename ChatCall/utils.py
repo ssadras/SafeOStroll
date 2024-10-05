@@ -13,7 +13,7 @@ def generate_response(input_text):
             ]
         )
         
-        bot_message = response.choices[0].message['content']
+        bot_message = response.choices[0].message.content
         return bot_message
     except Exception as e:
         return str(e)
