@@ -1,10 +1,11 @@
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 
-from Members.models import Member
+from Members.models import Member, MemberLocation
 
 
 # Create your views here.
@@ -71,3 +72,34 @@ class LoginView(View):
             return JsonResponse({"message": "Login successful", "user_id": user.id}, status=200)
         else:
             return JsonResponse({"error": "Invalid username or password"}, status=401)
+
+
+@login_required
+class SetLocationView(View):
+    def post(self, request):
+        data = request.POST or request.json()
+        user_id = data.get('user_id')
+        latitude = data.get('latitude')
+        longitude = data.get('longitude')
+
+        if not user_id or not latitude or not longitude:
+            return JsonResponse({"error": "User ID, latitude, and longitude are required"}, status=400)
+
+        member = Member.objects.filter(user_id=user_id).first()
+
+        if not member:
+            return JsonResponse({"error": "User not found"}, status=404)
+
+        # get logged-in user
+        user = request.user
+        if user.id != member.user_id:
+            return JsonResponse({"error": "You are not authorized to perform this action"}, status=403)
+
+        member_location = MemberLocation.objects.create(
+            member=member,
+            latitude=latitude,
+            longitude=longitude
+        )
+        member_location.save()
+
+        return JsonResponse({"success": "Location saved"}, status=201)
