@@ -1,0 +1,128 @@
+/* Dashboard.css */
+
+/* General styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #1e1e2e;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .dashboard-container {
+    padding: 20px;
+    color: white;
+    display: block; /* Ensure block layout, no centering */
+    min-height: 100vh; /* Ensure full height from top to bottom */
+    box-sizing: border-box; /* Include padding in height calculation */
+  }
+  
+  .dashboard-header {
+    padding: 20px;
+    margin-top: 0; /* Ensure no margin at the top */
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  .user-greeting h3 {
+    font-size: 1.5rem;
+    color: #ffffff;
+  }
+  
+  .user-greeting p {
+    font-size: 1rem;
+    color: #aaa;
+  }
+  
+  /* Action Cards */
+  .action-cards {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  
+  .card {
+    background-color: #292948;
+    border-radius: 15px;
+    padding: 20px;
+    width: calc(33% - 20px);
+    text-align: left;
+    position: relative;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .card h4 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .card p {
+    font-size: 0.9rem;
+    color: #bdbdbd;
+  }
+  
+  .card:hover {
+    background-color: #3b3b58;
+    cursor: pointer;
+  }
+  
+  .voice-card {
+    background: linear-gradient(135deg, #3b3bb1, #68d8ff);
+    color: white;
+  }
+  
+  .start-btn {
+    background-color: #ffffff;
+    color: #3b3bb1;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    margin-top: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .start-btn:hover {
+    background-color: #dedede;
+  }
+  
+  /* Recently Search */
+  .recent-search {
+    margin-top: 40px;
+  }
+  
+  .recent-search h5 {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: #ffffff;
+  }
+  
+  .recent-search ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .recent-search ul li {
+    background-color: #292948;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    color: #bdbdbd;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  
+  .recent-search ul li:hover {
+    background-color: #3b3b58;
+  }
+  
+  .app-logo {
+    width: 50px;
+    height: 50px;
+  }
+  

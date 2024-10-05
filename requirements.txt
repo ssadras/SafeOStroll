@@ -3,3 +3,4 @@ django-cors-headers
 openai
 channels
 djangorestframework
+daphne
