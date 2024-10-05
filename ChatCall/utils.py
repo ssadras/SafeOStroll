@@ -11,7 +11,8 @@ def generate_response(input_text):
         response = openai.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "Calm down the user"},
+                {"role": "system", "content": "Calm down the user with short responses. you are on a call so keep it "
+                                              "less than 30 seconds."},
                 {"role": "user", "content": input_text}
             ]
         )
@@ -51,7 +52,7 @@ def text_to_speech(text_input, model="tts-1"):
 
         response = openai.audio.speech.create(
             input=text_input,
-            model="tts-1-hd",
+            model="tts-1",
             voice="nova"
         )
 
