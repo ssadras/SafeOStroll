@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; // Ensure you have axios imported
-import './Login.css'; // Importing the CSS file for styling
+import axios from 'axios';
+import { UserContext } from '../UserContext';  // Import the UserContext
+
+import './Login.css';
+
 
 function Login() {
   const [email, setEmail] = useState(''); // Using email as username
@@ -21,6 +24,10 @@ function Login() {
 
       if (response.status === 200) {
         // Navigate to dashboard on successful login
+        const userId = response.data.user_id;
+
+        setUserId(userId);
+
         navigate('/dashboard');
       } else {
         alert('Login failed');
