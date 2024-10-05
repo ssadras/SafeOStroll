@@ -39,16 +39,17 @@ def speech_to_text(audio_bytes):
     
 
 def text_to_speech(text_input, model="tts-1"):
+    # Converts text to speech using the OpenAI TTS API
+
     try:
         openai.api_key = settings.SECRET_AI_KEY
 
-        # Call the OpenAI TTS API
         response = openai.Audio.create(
             text=text_input,
-            model=model  # Choose between "tts-1" (speed) or "tts-1-hd" (quality)
+            model="tts-1-hd"
         )
 
-        audio_content = response['audio']  # Extract the generated audio data
+        audio_content = response['audio']
         return audio_content
     except Exception as e:
         return str(e)
