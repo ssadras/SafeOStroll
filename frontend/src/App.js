@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import Dashboard from './components/Dashboard';
-import MapPage from './components/HereMap';  // Import your map component
+import Map from './components/HereMap';  // Import your map component
 import './App.css';
 
 function App() {
