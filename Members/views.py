@@ -4,11 +4,13 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 
 from Members.models import Member, MemberLocation
 
 
 # Create your views here.
+@csrf_exempt
 class SignupView(View):
     def post(self, request):
         data = request.POST or request.json()
@@ -53,6 +55,7 @@ class SignupView(View):
         return JsonResponse({"success": "User created"}, status=201)
 
 
+@csrf_exempt
 class LoginView(View):
     def post(self, request):
         data = request.POST or request.json()
@@ -75,6 +78,7 @@ class LoginView(View):
 
 
 @login_required
+@csrf_exempt
 class SetLocationView(View):
     def post(self, request):
         data = request.POST or request.json()
