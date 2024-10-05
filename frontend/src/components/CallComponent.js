@@ -50,7 +50,7 @@ const CallComponent = () => {
     newMediaRecorder.onstop = () => {
       // Stop recording and combine the chunks into one audio blob
       const audioBlob = new Blob(chunks, { type: 'audio/mpeg' });
-      playAudio(audioBlob); // Play the recorded audio
+      // playAudio(audioBlob); // Play the recorded audio
       setIsRecording(false);
     };
 
