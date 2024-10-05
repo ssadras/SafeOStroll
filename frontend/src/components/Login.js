@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Ensure you have axios imported
 import './Login.css'; // Importing the CSS file for styling
+import logo from './logo/logo.png';  // Import the logo
 
 function Login() {
   const [email, setEmail] = useState(''); // Using email as username
@@ -35,6 +36,8 @@ function Login() {
     <div className="login-container">
       <div className="login-box">
         <h2 className="login-title">Login</h2>
+           {/* Centered logo */}
+           <img src={logo} alt="App Logo" className="app-logo" />
         <form onSubmit={handleSubmit} className="login-form">
           <div className="input-container">
             <label>Email:</label>
