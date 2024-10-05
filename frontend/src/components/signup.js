@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
 
 function Signup() {
   const [fullName, setFullName] = useState('');
@@ -16,40 +14,28 @@ function Signup() {
 
 
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
-  
+
     const signupData = {
-      full_name: fullName,
-      email: email,
-      phone: phoneNumber,
-      university_id: university,
-      emergency_contact_name: emergencyName,
-      emergency_contact_phone: emergencyPhoneNumber,
-      password: password,
+      fullName,
+      email,
+      phoneNumber,
+      university,
+      emergencyName,
+      emergencyPhoneNumber,
+      password,
     };
-  
-    try {
-        console.log('Signup form submitted', signupData);
-      // Send a POST request to the backend signup endpoint
-      const response = await axios.post('http://localhost:8000/api/member/register/', signupData);
-  
-      //if (response.status === 201) {
-        // Handle success, redirect to dashboard or show a success message
-        //console.log('Signup successful:', response.data);
-        //navigate('/dashboard'); // Redirect to dashboard after successful signup
-      //}
-    } catch (error) {
-      // Handle error, display error message
-      //console.error('There was an error with signup:', error.response.data);
-      //alert(error.response.data.error || 'Signup failed. Please try again.');
-    }
+
+    console.log('Signup form submitted', signupData);
+    // You can add your form submission logic here (API calls, validations)
+    navigate('/dashboard'); // Redirect to dashboard after signup
+
   };
-  
 
   return (
     <div>
