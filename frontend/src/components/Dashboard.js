@@ -1,5 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import logo from './logo/logo.png';  // Import the logo
+import './Dashboard.css'; // Import the custom CSS file
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -13,13 +15,16 @@ function Dashboard() {
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Welcome to your Dashboard!</h1>
-        <p>This is the main landing page after login or signup.</p>
-        <button onClick={goToMap}>Go to map</button>
-        <button onClick={goToCall}>Go to call</button>
+    <div className="dashboard-container">
+      <header className="dashboard-header">
+        <img src={logo} alt="SafeOStroll Logo" className="app-logo" />
+        <h1 className="dashboard-title">Welcome to SafeOStroll</h1>
+        <p className="dashboard-subtitle">Your personal safety companion for a safe walk home.</p>
 
+        <div className="dashboard-buttons">
+          <button className="btn primary-btn" onClick={goToMap}>Go to Map</button>
+          <button className="btn secondary-btn" onClick={goToCall}>Start a Call</button>
+        </div>
       </header>
     </div>
   );
