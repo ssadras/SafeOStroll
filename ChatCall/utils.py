@@ -5,7 +5,7 @@ def generate_response(input_text):
     try:
         openai.api_key = settings.SECRET_AI_KEY
 
-        response = openai.ChatCompletion.create(
+        response = openai.chat.completions.create(
             model="gpt-4o",
             messages=[
                 {"role": "system", "content": "Calm down the user"},
