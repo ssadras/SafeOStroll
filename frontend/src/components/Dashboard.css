@@ -3,75 +3,126 @@
 /* General styles */
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #f0f4f8;
+    background-color: #1e1e2e;
     margin: 0;
     padding: 0;
   }
   
   .dashboard-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    padding: 20px;
+    color: white;
+    display: block; /* Ensure block layout, no centering */
+    min-height: 100vh; /* Ensure full height from top to bottom */
+    box-sizing: border-box; /* Include padding in height calculation */
   }
   
   .dashboard-header {
-    background-color: #ffffff;
-    padding: 50px;
-    border-radius: 15px;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 90%;
-    max-width: 600px;
+    padding: 20px;
+    margin-top: 0; /* Ensure no margin at the top */
   }
-  
-  .app-logo {
-    width: 120px;
-    margin-bottom: 20px;
-  }
-  
-  .dashboard-title {
-    font-size: 2.2rem;
-    color: #1a1a2e;
-    margin-bottom: 10px;
-  }
-  
-  .dashboard-subtitle {
-    font-size: 1.2rem;
-    color: #5f6368;
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 30px;
   }
   
-  .dashboard-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
+  .user-greeting h3 {
+    font-size: 1.5rem;
+    color: #ffffff;
   }
   
-  .btn {
-    padding: 12px 30px;
-    border-radius: 5px;
+  .user-greeting p {
     font-size: 1rem;
+    color: #aaa;
+  }
+  
+  /* Action Cards */
+  .action-cards {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  
+  .card {
+    background-color: #292948;
+    border-radius: 15px;
+    padding: 20px;
+    width: calc(33% - 20px);
+    text-align: left;
+    position: relative;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .card h4 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .card p {
+    font-size: 0.9rem;
+    color: #bdbdbd;
+  }
+  
+  .card:hover {
+    background-color: #3b3b58;
+    cursor: pointer;
+  }
+  
+  .voice-card {
+    background: linear-gradient(135deg, #3b3bb1, #68d8ff);
+    color: white;
+  }
+  
+  .start-btn {
+    background-color: #ffffff;
+    color: #3b3bb1;
     border: none;
+    padding: 10px 15px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    margin-top: 15px;
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
   
-  .primary-btn {
-    background-color: #ff5959;
+  .start-btn:hover {
+    background-color: #dedede;
+  }
+  
+  /* Recently Search */
+  .recent-search {
+    margin-top: 40px;
+  }
+  
+  .recent-search h5 {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
     color: #ffffff;
   }
   
-  .primary-btn:hover {
-    background-color: #ff3c3c;
+  .recent-search ul {
+    list-style: none;
+    padding: 0;
   }
   
-  .secondary-btn {
-    background-color: #ffbd59;
-    color: #ffffff;
+  .recent-search ul li {
+    background-color: #292948;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    color: #bdbdbd;
+    font-size: 0.9rem;
+    cursor: pointer;
   }
   
-  .secondary-btn:hover {
-    background-color: #ffa723;
+  .recent-search ul li:hover {
+    background-color: #3b3b58;
+  }
+  
+  .app-logo {
+    width: 50px;
+    height: 50px;
   }
   
