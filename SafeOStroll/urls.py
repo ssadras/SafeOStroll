@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/member/', include('Members.urls', namespace='Members')),
     path('api/chat/', include('ChatCall.urls', namespace='ChatCall')),
+    path('api/notification/', include('Notifications.urls', namespace='Notifications')),
     # path('ws/call/', CallSystem.as_asgi()),
 ]
 
