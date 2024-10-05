@@ -11,7 +11,7 @@ function Dashboard() {
   };
 
   const goToCall = () => {
-    navigate('/call'); // Navigate to the call page
+    navigate('/call'); // Navigate to the call page, which will initiate listening
   };
 
   return (
@@ -42,7 +42,6 @@ function Dashboard() {
             <h4>Emergency Contacts</h4>
             <p>Access your emergency contacts</p>
           </div>
-
         </div>
       </header>
     </div>
