@@ -9,6 +9,7 @@ from django.shortcuts import render
 from django.views import View
 
 from Members.models import Member, MemberLocation, University
+from Notifications.models import Notification
 
 
 # Create your views here.
@@ -96,7 +97,7 @@ class LoginView(View):
             return JsonResponse({"error": "Invalid username or password"}, status=401)
 
 
-#@login_required
+# @login_required
 class SetLocationView(View):
     def post(self, request):
         # Parse request data
@@ -147,7 +148,7 @@ class SetLocationView(View):
         member_location.save()
 
         return JsonResponse({"success": "Location saved"}, status=201)
-    
+
 
 class GetMembersAroundUser(View):
     def post(self, request):
@@ -187,7 +188,12 @@ class GetMembersAroundUser(View):
 class AskHelpNearbyMembers(View):
     def post(self, request):
 
-        user_id = request.POST.get('user_id')
+        if request.POST:
+            data = request.POST
+        else:
+            data = json.loads(request.body.decode('utf-8'))
+
+        user_id = data.get('user_id')
 
         member = Member.objects.filter(user_id=user_id).first()
 
@@ -204,11 +210,14 @@ class AskHelpNearbyMembers(View):
         longitude = member_location.longitude
 
         # get all members around the user
-        members = MemberLocation.objects.get_members_in_distance(latitude, longitude, 0.01)
+        members = MemberLocation.objects.get_members_in_distance(latitude, longitude, 0.11)
 
         # send message to all members
         for member in members:
-            # send message to member
-            pass
+            # Add notification to them
+            Notification.objects.create(
+                member=member.member,
+                message=f"Hey, {member.member.full_name} needs help nearby. Please reach out to them at location {latitude}, {longitude}"
+            )
 
         return JsonResponse({"success": "Message sent to nearby members"}, status=200)
