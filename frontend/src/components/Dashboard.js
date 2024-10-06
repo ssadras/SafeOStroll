@@ -14,6 +14,10 @@ function Dashboard() {
     navigate('/call'); // Navigate to the call page, which will initiate listening
   };
 
+  const goToNotifications = () => {
+    navigate('/notifications'); // Navigate to the notifications page
+  };
+
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
@@ -21,18 +25,23 @@ function Dashboard() {
           <img src={logo} alt="App Logo" className="app-logo" />
           <h1>Welcome to SafeOStroll</h1>
           <div className="user-greeting">
-            <h3>Hey,  </h3>
+            <h3>Hey,</h3>
             <p>Let's see what can I do for you?</p>
+          </div>
+          
+          {/* Notification bell icon */}
+          <div className="notification-icon" onClick={goToNotifications}>
+            <i className="fas fa-bell"></i> {/* FontAwesome bell icon */}
           </div>
         </div>
 
         <div className="action-cards">
           <div className="card voice-card" onClick={goToCall}>
             <h4>Voice Helper</h4>
-            <p>Let's find new things using voice recording</p>
+            <p>Your safety is important. Talk to our AI Chatbot</p>
             <button className="start-btn">Start Call</button>
           </div>
-
+          
           <div className="card" onClick={goToMap}>
             <h4>Check Maps</h4>
             <p>Click here to see your location and nearby people for safety</p>

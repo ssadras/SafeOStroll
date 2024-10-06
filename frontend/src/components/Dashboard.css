@@ -7,21 +7,21 @@ body {
     background-size: 200% 200%;
     animation: gradientAnimation 10s ease infinite; /* Animated gradient */
     height: 100vh;
-  }
-  
-  @keyframes gradientAnimation {
+}
+
+@keyframes gradientAnimation {
     0% {
-      background-position: 0% 50%;
+        background-position: 0% 50%;
     }
     50% {
-      background-position: 100% 50%;
+        background-position: 100% 50%;
     }
     100% {
-      background-position: 0% 50%;
+        background-position: 0% 50%;
     }
-  }
-  
-  .dashboard-container {
+}
+
+.dashboard-container {
     padding: 20px;
     color: white;
     display: flex;
@@ -29,59 +29,66 @@ body {
     align-items: center;
     min-height: 100vh;
     box-sizing: border-box;
-  }
-  
-  .dashboard-header {
+}
+
+.dashboard-header {
     padding: 20px;
     margin-top: 0;
     text-align: center;
-  }
-  
-  .header-top {
+    position: relative; /* Ensure relative positioning for the header */
+}
+
+.header-top {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     margin-bottom: 30px;
     margin-top: 20px;
-  }
-  
-  .app-logo {
-    margin-top: 10px;
+    position: relative;
+}
+
+.app-logo {
     width: 60px; /* Slightly larger logo */
     height: 60px;
     margin-bottom: 20px;
-  }
-  
+}
 
-  
-  h1 {
-    font-size: 2.5rem;
-    color: #ffffff;
-    text-shadow: 0px 0px 15px #3b3bb1; /* Add glowing text shadow */
-  }
-  
-  .user-greeting h3 {
+.user-greeting h3 {
     font-size: 1.5rem;
     color: #ffffff;
-  }
-  
-  .user-greeting p {
+}
+
+.user-greeting p {
     font-size: 1rem;
     color: #aaa;
-    text-shadow: 0px 0px 5px #aaa;
-  }
-  
-  /* Action Cards */
-  .action-cards {
+}
+
+/* Notifications Icon */
+.notification-icon {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.notification-icon:hover {
+    color: #ff5959; /* Add a hover effect */
+}
+
+/* Action Cards */
+.action-cards {
     display: flex;
     flex-direction: column;
     gap: 20px;
     align-items: center;
     width: 100%;
-  }
-  
-  .card {
+}
+
+.card {
     background-color: #292948;
     border-radius: 15px;
     padding: 20px;
@@ -93,21 +100,21 @@ body {
     box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
     overflow: hidden;
     border: 2px solid transparent;
-  }
-  
-  .card:hover {
+}
+
+.card:hover {
     background-color: #3b3b58;
     cursor: pointer;
     box-shadow: 0px 5px 25px rgba(0, 0, 0, 0.4);
-  }
-  
-  .voice-card {
+}
+
+.voice-card {
     background: linear-gradient(135deg, #3b3bb1, #68d8ff);
     color: white;
-  }
-  
-  /* Glowing button effect */
-  .start-btn {
+}
+
+/* Glowing button effect */
+.start-btn {
     background-color: #ffffff;
     color: #3b3bb1;
     border: none;
@@ -118,46 +125,44 @@ body {
     cursor: pointer;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 0 10px #68d8ff, 0 0 20px #68d8ff, 0 0 30px #68d8ff; /* Glowing effect */
-  }
-  
-  .start-btn:hover {
+}
+
+.start-btn:hover {
     background-color: #dedede;
     box-shadow: 0 0 20px #3b3bb1, 0 0 30px #3b3bb1, 0 0 40px #3b3bb1; /* Stronger glow on hover */
-  }
-  
-  /* Responsive Design for Smaller Screens */
-  @media (max-width: 768px) {
+}
+
+@media (max-width: 768px) {
     .header-top {
-      flex-direction: column;
-      align-items: center;
+        flex-direction: column;
+        align-items: center;
     }
-  
+
     .action-cards {
-      flex-direction: column;
+        flex-direction: column;
     }
-  
+
     .card {
-      width: 100%;
-      max-width: 400px;
+        width: 100%;
+        max-width: 400px;
     }
-  }
-  
-  @media (max-width: 480px) {
+}
+
+@media (max-width: 480px) {
     .dashboard-container {
-      padding: 10px;
+        padding: 10px;
     }
-  
+
     .dashboard-header {
-      padding: 10px;
+        padding: 10px;
     }
-  
+
     .card {
-      padding: 15px;
+        padding: 15px;
     }
-  
+
     .start-btn {
-      padding: 8px 12px;
-      font-size: 0.8rem;
+        padding: 8px 12px;
+        font-size: 0.8rem;
     }
-  }
-  
+}
