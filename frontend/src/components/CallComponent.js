@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import './CallComponent.css';  // Import the CSS file for styling
 
 const CallComponent = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -31,7 +32,6 @@ const CallComponent = () => {
     };
   }, []);
 
-  // Starts recording audio as soon as the component mounts
   useEffect(() => {
     if (socket && socket.readyState === WebSocket.OPEN) {
       startRecording();
@@ -40,7 +40,6 @@ const CallComponent = () => {
 
   const startRecording = async () => {
     if (isRecording) return;
-
     setIsRecording(true);
     
     try {
@@ -82,7 +81,6 @@ const CallComponent = () => {
 
     const detect = () => {
       analyser.getByteFrequencyData(data);
-
       const isSilent = data.every((value) => value === 0);
 
       if (isSilent) {
@@ -116,10 +114,12 @@ const CallComponent = () => {
   };
 
   return (
-    <div>
-      <h2>Call AI (WebSocket Enabled)</h2>
-      <audio ref={audioRef} controls />
-      <p>{isRecording ? 'Recording in progress...' : 'Not recording'}</p>
+    <div className="call-container">
+      <div className={`listening-circle ${isRecording ? 'active' : ''}`}>
+        <p className="status-text">{isRecording ? "Go ahead, I'm listening" : "Ready"}</p>
+      </div>
+      <audio ref={audioRef} controls className="audio-controls" />
+      <p className="recording-status">{isRecording ? 'Recording in progress...' : 'Not recording'}</p>
     </div>
   );
 };
