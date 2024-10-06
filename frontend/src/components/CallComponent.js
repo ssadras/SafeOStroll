@@ -7,6 +7,17 @@ const CallComponent = () => { // Accept onDistress as a prop
   const [socket, setSocket] = useState(null);
   const audioRef = useRef(null);
   const mediaRecorderRef = useRef(null); // Use a ref to store the MediaRecorder
+  const [colorIndex, setColorIndex] = useState(0); // State to manage color index
+  const colors = [ // Muted colors including purple and blue for the transition
+    'radial-gradient(circle at center, #2a2a37, #383846)', // Dark gray
+    'radial-gradient(circle at center, #383846, #4a4a58)', // Darker gray
+    'radial-gradient(circle at center, #4a4a58, #5c5c6e)', // Grayish blue
+    'radial-gradient(circle at center, #5c5c6e, #7e7e8a)', // Muted blue
+    'radial-gradient(circle at center, #7e7e8a, #B0A4C4)', // Soft purple
+    'radial-gradient(circle at center, #B0A4C4, #9B7BB3)', // Muted purple
+    'radial-gradient(circle at center, #9B7BB3, #7B5B9B)', // Darker muted purple
+    'radial-gradient(circle at center, #7B5B9B, #5B9B9B)', // Muted teal
+  ];
 
   // Initialize WebSocket connection when the component mounts
   useEffect(() => {
@@ -25,6 +36,15 @@ const CallComponent = () => { // Accept onDistress as a prop
     return () => {
       ws.close(); // Cleanup WebSocket connection on component unmount
     };
+  }, []);
+
+  // Change color every 2 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setColorIndex((prevIndex) => (prevIndex + 1) % colors.length);
+    }, 2000); // Adjust the interval time as needed
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
   }, []);
 
   const startRecording = async () => {
@@ -134,7 +154,11 @@ const CallComponent = () => { // Accept onDistress as a prop
 
   return (
     <div className="call-container">
-      <div className={`listening-circle ${isRecording ? 'active' : ''}`} onClick={startRecording}>
+      <div
+        className={`listening-circle ${isRecording ? 'active' : ''}`}
+        onClick={startRecording}
+        style={{ background: colors[colorIndex] }} // Apply color transition here
+      >
         {isRecording ? 'Stop' : 'Start'}
       </div>
       <audio ref={audioRef} controls className="audio-controls" />

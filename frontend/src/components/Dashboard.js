@@ -47,8 +47,7 @@ function Dashboard() {
           <img src={logo} alt="App Logo" className="app-logo" />
           <h1>Welcome to SafeOStroll</h1>
           <div className="user-greeting">
-            <h3>Hey,</h3>
-            <p>Let's see what can I do for you?</p>
+            <h3>Your safety companion is here. How can I support you?</h3>
           </div>
 
           {/* Notification bell icon */}
