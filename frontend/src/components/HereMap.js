@@ -32,7 +32,7 @@ const HereMap = () => {
     const H = window.H;
 
     const platform = new H.service.Platform({
-      apikey: 'DNmL97HWjNYSsJvnI8e-ootShOo4_sOJfXI0HfqPaQ0',
+      apikey: '***REMOVED***',
     });
 
     const defaultLayers = platform.createDefaultLayers();
