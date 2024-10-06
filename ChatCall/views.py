@@ -87,6 +87,6 @@ def ai_stt(request):
     return JsonResponse({'error': 'Only POST requests are allowed.'}, status=405)
 
 
-def clearHistory(request):
+def clear_chat_history(request):
     chat_history.clear()
     return JsonResponse({"message": "Chat history cleared."})
