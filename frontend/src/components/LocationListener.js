@@ -1,48 +1,60 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useContext } from 'react';
+import axios from 'axios';
+import { UserContext } from './UserContext';  // Import UserContext
 
 const LocationListener = () => {
-    const [location, setLocation] = useState({ latitude: null, longitude: null });
+    const { userId } = useContext(UserContext); // Get userId from context
 
     useEffect(() => {
-        const getLocation = () => {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const { latitude, longitude } = position.coords;
-                        setLocation({ latitude, longitude });
-                        console.log('Location:', { latitude, longitude });
-                    },
-                    (error) => {
-                        console.error('Error fetching location:', error);
-                    }
-                );
-            } else {
-                console.error("Geolocation is not supported by this browser.");
+        const sendLocation = async (latitude, longitude) => {
+            try {
+                // Send a POST request with user_id, latitude, and longitude
+                const response = await axios.post('http://localhost:8000/api/location/set/', {
+                    user_id: userId,
+                    latitude: latitude,
+                    longitude: longitude,
+                });
+
+                console.log('Location sent successfully:', response.data);
+            } catch (error) {
+                console.error('Error sending location:', error);
             }
         };
 
-        // Call getLocation immediately to get the user's initial location
-        getLocation();
+        const startLocationTracking = () => {
+            if (navigator.geolocation) {
+                // Update location every 10 seconds
+                const intervalId = setInterval(() => {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const latitude = position.coords.latitude;
+                            const longitude = position.coords.longitude;
+                            console.log('User location:', latitude, longitude);
+                            
+                            // Call the function to send the location
+                            sendLocation(latitude, longitude);
+                        },
+                        (error) => {
+                            console.error('Geolocation error:', error);
+                        },
+                        { enableHighAccuracy: true }
+                    );
+                }, 10000); // 10 seconds
 
-        // Set up polling every 10 seconds
-        const intervalId = setInterval(getLocation, 10000);
+                return () => clearInterval(intervalId); // Cleanup the interval on unmount
+            } else {
+                console.error('Geolocation is not supported by this browser.');
+            }
+        };
 
-        // Clean up the interval on component unmount
-        return () => clearInterval(intervalId);
-    }, []);
+        const intervalId = startLocationTracking();
 
-    return (
-        <div>
-            <h2>Location Listener</h2>
-            {location.latitude && location.longitude ? (
-                <p>
-                    Latitude: {location.latitude}, Longitude: {location.longitude}
-                </p>
-            ) : (
-                <p>Fetching location...</p>
-            )}
-        </div>
-    );
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, [userId]); // Run effect when userId changes
+
+    return null; // No UI component to render
 };
 
 export default LocationListener;
