@@ -5,7 +5,7 @@ import { UserContext } from './UserContext';  // Import UserContext
 const NotificationListener = () => {
     const [newNotifications, setNewNotifications] = useState([]);
     const { userId } = useContext(UserContext);  // Access the global userId from context
-
+    
     useEffect(() => {
         // Function to check the backend for new notifications
         const checkForNotifications = async () => {
