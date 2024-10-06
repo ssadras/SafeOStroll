@@ -5,6 +5,8 @@ from .utils import generate_response, speech_to_text, text_to_speech
 from django.conf import settings
 import openai
 
+chat_history = []
+
 
 class CallSystem(AsyncWebsocketConsumer):
     async def connect(self):
@@ -27,7 +29,13 @@ class CallSystem(AsyncWebsocketConsumer):
 
     async def generate_ai_response(self, transcription):
         """Generate a response from your AI based on the transcription."""
-        return generate_response(transcription)
+
+        response = generate_response(transcription, chat_history)
+
+        chat_history.append({"role": "user", "content": transcription})
+        chat_history.append({"role": "assistant", "content": response})
+
+        return response
 
     async def text_to_speech(self, text):
         """Convert AI-generated text to speech using Google TTS."""
