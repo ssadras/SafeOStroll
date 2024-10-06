@@ -18,6 +18,10 @@ function Dashboard() {
     navigate('/notifications'); // Navigate to the notifications page
   };
 
+  const goToEmergencyContacts = () => {
+    navigate('/emergencycontacts'); // Navigate to the emergency
+  }
+
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
@@ -47,7 +51,7 @@ function Dashboard() {
             <p>Click here to see your location and nearby people for safety</p>
           </div>
 
-          <div className="card">
+          <div className="card" onClick={goToEmergencyContacts}>
             <h4>Emergency Contacts</h4>
             <p>Access your emergency contacts</p>
           </div>
