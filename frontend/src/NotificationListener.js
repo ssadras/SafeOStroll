@@ -39,7 +39,6 @@ const NotificationListener = () => {
 
     return (
         <div>
-            <h1>Notification Listener</h1>
             {newNotifications.length > 0 && (
                 <ul>
                     {newNotifications.map(notification => (
