@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './CallComponent.css'; // Import the CSS file for styling
+import { UserContext } from '../UserContext';
 
-const CallComponent = () => {
+const CallComponent = () => { // Accept onDistress as a prop
   const [isRecording, setIsRecording] = useState(false);
   const [socket, setSocket] = useState(null);
   const audioRef = useRef(null);
@@ -80,6 +81,65 @@ const CallComponent = () => {
     };
 
     newMediaRecorder.start();
+
+    // Analyze the audio stream to detect screams
+    analyzeAudio(stream);
+  };
+
+  const handleDistress = () => {
+    const userId = 2;
+
+    console.log('Distress button clicked');
+    // setLoading(true);
+
+    // call the backend API to send distress signal with post request with user_id as the payload
+    fetch('http://localhost:8000/api/member/ask-help-nearby-members/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user_id: userId }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Distress signal sent successfully');
+          alert('Distress signal sent successfully');
+        } else {
+          console.error('Failed to send distress signal');
+          alert('Failed to send distress signal');
+        }
+      })
+      .catch((error) => {
+        console.error('Error sending distress signal:', error);
+        alert('Error sending distress signal');
+      });
+  };
+
+  const analyzeAudio = (stream) => {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const analyser = audioContext.createAnalyser();
+    const source = audioContext.createMediaStreamSource(stream);
+    
+    source.connect(analyser);
+    analyser.fftSize = 2048;
+
+    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+    const checkForScreams = () => {
+      analyser.getByteFrequencyData(dataArray);
+
+      // Calculate the average volume
+      const averageVolume = dataArray.reduce((a, b) => a + b) / dataArray.length;
+
+      // Adjust the threshold as necessary
+      if (averageVolume > 125) { // Example threshold for detecting a scream
+        handleDistress(); // Trigger the distress button action
+      }
+
+      requestAnimationFrame(checkForScreams);
+    };
+
+    requestAnimationFrame(checkForScreams);
   };
 
   const playAudio = (audioData) => {
