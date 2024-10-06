@@ -217,7 +217,8 @@ class AskHelpNearbyMembers(View):
             # Add notification to them
             Notification.objects.create(
                 member=member.member,
-                message=f"Hey, {member.member.full_name} needs help nearby. Please reach out to them at location {latitude}, {longitude}"
+                title="Help Needed",
+                content=f"Hey, {member.member.full_name} needs help nearby. Please reach out to them at location {latitude}, {longitude}"
             )
 
         return JsonResponse({"success": "Message sent to nearby members"}, status=200)
