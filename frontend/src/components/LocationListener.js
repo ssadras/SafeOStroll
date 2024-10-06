@@ -1,15 +1,14 @@
 import React, { useEffect, useContext } from 'react';
 import axios from 'axios';
-import { UserContext } from './UserContext';  // Import UserContext
+import { UserContext } from '../UserContext';
 
 const LocationListener = () => {
-    const { userId } = useContext(UserContext); // Get userId from context
+    const { userId } = useContext(UserContext);
 
     useEffect(() => {
         const sendLocation = async (latitude, longitude) => {
             try {
-                // Send a POST request with user_id, latitude, and longitude
-                const response = await axios.post('http://localhost:8000/api/location/set/', {
+                const response = await axios.post('http://localhost:8000/api/member/set-location/', {
                     user_id: userId,
                     latitude: latitude,
                     longitude: longitude,

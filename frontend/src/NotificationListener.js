@@ -1,60 +1,56 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { UserContext } from './UserContext';  // Import UserContext
 
-const LocationListener = () => {
-    const { userId } = useContext(UserContext); // Get userId from context
+const NotificationListener = () => {
+    const [newNotifications, setNewNotifications] = useState([]);
+    const { userId } = useContext(UserContext);  // Access the global userId from context
 
     useEffect(() => {
-        const sendLocation = async (latitude, longitude) => {
+        // Function to check the backend for new notifications
+        const checkForNotifications = async () => {
+            if (!userId) return;  // If userId is not available, skip the API call
+
             try {
-                // Send a POST request with user_id, latitude, and longitude
-                const response = await axios.post('http://localhost:8000/api/location/set/', {
-                    user_id: userId,
-                    latitude: latitude,
-                    longitude: longitude,
+                // Send a POST request with user_id in the body
+                console.log("user")
+                const response = await axios.post('http://localhost:8000/api/notification/get_new/', {
+                    user_id: userId  // Send user_id in the request body
                 });
+                
+                const { notifications } = response.data;
+                console.log("New notifications:", notifications);
 
-                console.log('Location sent successfully:', response.data);
+                if (notifications.length > 0) {
+                    alert("You have new notifications!");
+                    setNewNotifications(notifications);  // Optionally store them
+                }
             } catch (error) {
-                console.error('Error sending location:', error);
+                console.error("Error fetching notifications:", error);
             }
         };
 
-        const startLocationTracking = () => {
-            if (navigator.geolocation) {
-                // Update location every 10 seconds
-                const intervalId = setInterval(() => {
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            const latitude = position.coords.latitude;
-                            const longitude = position.coords.longitude;
-                            console.log('User location:', latitude, longitude);
-                            
-                            // Call the function to send the location
-                            sendLocation(latitude, longitude);
-                        },
-                        (error) => {
-                            console.error('Geolocation error:', error);
-                        },
-                        { enableHighAccuracy: true }
-                    );
-                }, 10000); // 10 seconds
+        // Set up polling every 10 seconds
+        const intervalId = setInterval(checkForNotifications, 10000);
 
-                return () => clearInterval(intervalId); // Cleanup the interval on unmount
-            } else {
-                console.error('Geolocation is not supported by this browser.');
-            }
-        };
+        // Clean up the interval on component unmount
+        return () => clearInterval(intervalId);
+    }, [userId]);  // Dependency array includes userId so it updates when the userId changes
 
-        const intervalId = startLocationTracking();
-
-        return () => {
-            clearInterval(intervalId);
-        };
-    }, [userId]); // Run effect when userId changes
-
-    return null; // No UI component to render
+    return (
+        <div>
+            <h1>Notification Listener</h1>
+            {newNotifications.length > 0 && (
+                <ul>
+                    {newNotifications.map(notification => (
+                        <li key={notification.id}>
+                            {notification.title}: {notification.content}
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
+    );
 };
 
-export default LocationListener;
+export default NotificationListener;
