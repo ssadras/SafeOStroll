@@ -39,7 +39,7 @@ const NotificationListener = () => {
 
     return (
         <div>
-=            {newNotifications.length > 0 && (
+            {newNotifications.length > 0 && (
                 <ul>
                     {newNotifications.map(notification => (
                         <li key={notification.id}>
