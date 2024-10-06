@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import './Signup.css'; // Link to the CSS file
+import logo from './logo/logo.png';  // Import the logo
 
 
 function Signup() {
@@ -14,15 +16,13 @@ function Signup() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
 
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
-  
+
     const signupData = {
       full_name: fullName,
       email: email,
@@ -32,12 +32,11 @@ function Signup() {
       emergency_contact_phone: emergencyPhoneNumber,
       password: password,
     };
-    
-    // for Denugging
+
+    // Debugging
     console.log(signupData);
 
     try {
-      // Send a POST request to the backend signup endpoint
       const response = await axios.post(
         'http://localhost:8000/api/member/register/', 
         signupData, 
@@ -45,23 +44,25 @@ function Signup() {
       );
 
       if (response.status === 201) {
-        // Handle success, redirect to dashboard or show a success message
         console.log('Signup successful:', response.data);
-        //navigate('/dashboard'); // Redirect to dashboard after successful signup
+        navigate('/dashboard'); // Redirect to dashboard after successful signup
       }
     } catch (error) {
-      // Handle error, display error message
       console.error('There was an error with signup:', error.response.data);
       alert(error.response.data.error || 'Signup failed. Please try again.');
     }
   };
-  
 
   return (
-    <div>
-      <h2>Sign Up</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
+    <div className="signup-container">
+      <form className="signup-form" onSubmit={handleSubmit}>
+        <h2>Sign Up
+        </h2>
+        
+        {/* Centered logo */}
+        <img src={logo} alt="App Logo" className="app-logo" />
+
+        <div className="form-group">
           <label>Full Name:</label>
           <input
             type="text"
@@ -71,7 +72,7 @@ function Signup() {
           />
         </div>
 
-        <div>
+        <div className="form-group">
           <label>Email:</label>
           <input
             type="email"
@@ -81,7 +82,7 @@ function Signup() {
           />
         </div>
 
-        <div>
+        <div className="form-group">
           <label>Phone Number:</label>
           <input
             type="tel"
@@ -91,7 +92,7 @@ function Signup() {
           />
         </div>
 
-        <div>
+        <div className="form-group">
           <label>University:</label>
           <select
             value={university}
@@ -106,7 +107,7 @@ function Signup() {
           </select>
         </div>
 
-        <div>
+        <div className="form-group">
           <label>Emergency Contact Name:</label>
           <input
             type="text"
@@ -116,7 +117,7 @@ function Signup() {
           />
         </div>
 
-        <div>
+        <div className="form-group">
           <label>Emergency Contact Phone Number:</label>
           <input
             type="tel"
@@ -126,7 +127,7 @@ function Signup() {
           />
         </div>
 
-        <div>
+        <div className="form-group">
           <label>Password:</label>
           <input
             type="password"
@@ -136,7 +137,7 @@ function Signup() {
           />
         </div>
 
-        <div>
+        <div className="form-group">
           <label>Confirm Password:</label>
           <input
             type="password"
@@ -146,7 +147,7 @@ function Signup() {
           />
         </div>
 
-        <button type="submit">Sign Up</button>
+        <button type="submit" className="signup-button">Sign Up</button>
       </form>
     </div>
   );
