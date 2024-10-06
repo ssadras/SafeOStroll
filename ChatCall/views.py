@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+
+from .caller import chat_history
 from .utils import generate_response, speech_to_text, text_to_speech
 import mimetypes
 from django.http import HttpResponse
@@ -83,3 +85,8 @@ def ai_stt(request):
             return JsonResponse({'error': str(e)}, status=500)
 
     return JsonResponse({'error': 'Only POST requests are allowed.'}, status=405)
+
+
+def clear_chat_history(request):
+    chat_history.clear()
+    return JsonResponse({"message": "Chat history cleared."})
