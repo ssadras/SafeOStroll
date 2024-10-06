@@ -1,12 +1,17 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState, useContext, useCallback } from 'react';
 import LocationListener from './LocationListener'; // Import your LocationListener component
+import { UserContext } from '../UserContext'; // Make sure to import your UserContext
 
 const HereMap = () => {
   const mapRef = useRef(null);
+  const [mapInstance, setMapInstance] = useState(null); // State to hold the map instance
+  const [members, setMembers] = useState([]); // State to hold the list of members
+  const { userId } = useContext(UserContext); // Move useContext here to get userId
 
   useEffect(() => {
-    // Call the initializeMap function when the component mounts
+    // Initialize the map
     const map = initializeMap();
+    setMapInstance(map);
 
     // Resize the map when the window size changes
     const handleResize = () => {
@@ -23,8 +28,61 @@ const HereMap = () => {
     };
   }, []);
 
+  const addMemberMarkers = useCallback((members) => {
+    const H = window.H;
+    const colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF'];
+
+    members.forEach((member, index) => {
+      const memberLocation = {
+        lat: member.latitude,
+        lng: member.longitude,
+      };
+
+      console.log(`Adding marker for: ${member.full_name} at ${memberLocation.lat}, ${memberLocation.lng}`); // Log location
+
+      const icon = new H.map.Icon(
+        `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="${colors[index % colors.length]}" viewBox="0 0 16 16"><path d="M8 0a8 8 0 0 0-8 8c0 3.5 3.5 8 8 8s8-4.5 8-8a8 8 0 0 0-8-8zm0 12.5a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z"/></svg>`
+      );
+
+      const marker = new H.map.Marker(memberLocation);
+      marker.setIcon(icon);
+      mapInstance.addObject(marker);
+
+      const bubble = new H.ui.InfoBubble(memberLocation, { content: member.full_name });
+      const ui = H.ui.UI.createDefault(mapInstance, mapInstance.getBaseLayer());
+      ui.addBubble(bubble);
+    });
+  }, [mapInstance]); // Adding mapInstance as a dependency
+
+  useEffect(() => {
+    if (mapInstance && userId) {
+      fetch('http://localhost:8000/api/member/get-members-around-user/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id: userId }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+          if (data.members) {
+            setMembers(data.members);
+            addMemberMarkers(data.members); // Call addMemberMarkers with the fetched members
+          } else {
+            console.error('No members found');
+          }
+        })
+        .catch((error) => console.error('Error fetching members:', error));
+    }
+  }, [mapInstance, userId, addMemberMarkers]); // Include addMemberMarkers in the dependency array
+
   const initializeMap = () => {
-    console.log('Initializing map...');
     const H = window.H;
 
     const platform = new H.service.Platform({
@@ -44,16 +102,12 @@ const HereMap = () => {
     H.ui.UI.createDefault(map, defaultLayers);
 
     if (navigator.geolocation) {
-      console.log('Requesting user location...');
-
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const userLocation = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           };
-
-          console.log('User location obtained:', userLocation);
 
           // Center map on the user's location
           map.setCenter(userLocation);
@@ -62,12 +116,6 @@ const HereMap = () => {
           // Add a marker at the user's location
           const userMarker = new H.map.Marker(userLocation);
           map.addObject(userMarker);
-
-          // Ensure the marker is being added
-          console.log('Marker added at user location:', userMarker);
-
-          // Manually resize the map to ensure everything fits
-          map.getViewPort().resize();
         },
         (error) => {
           console.error('Geolocation error:', error);
@@ -76,7 +124,6 @@ const HereMap = () => {
         { enableHighAccuracy: true }
       );
     } else {
-      console.error('Geolocation not supported by this browser.');
       alert('Geolocation is not supported by your browser.');
     }
 
@@ -102,7 +149,7 @@ const HereMap = () => {
       }}
     >
       <h1 style={{ color: '#ff5959' }}>Here Map</h1>
-      
+
       {/* Include the Location Listener here */}
       <LocationListener />
 
@@ -119,7 +166,7 @@ const HereMap = () => {
           overflow: 'hidden',
         }}
       ></div>
-      
+
       <button
         onClick={handleDistress}
         style={{
