@@ -19,7 +19,7 @@ class GetNewNotifications(View):
                 return JsonResponse({"error": "Invalid JSON"}, status=400)
         
             user_id = data.get('user_id')
-            print(user_id)
+            # print(user_id)
             user = User.objects.get(id=user_id)
 
         notifications = Notification.objects.filter(member=user.member, seen=False).all()
