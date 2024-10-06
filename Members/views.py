@@ -96,9 +96,10 @@ class LoginView(View):
             return JsonResponse({"error": "Invalid username or password"}, status=401)
 
 
-@login_required
+#@login_required
 class SetLocationView(View):
     def post(self, request):
+        # Parse request data
         if request.POST:
             data = request.POST
         else:
@@ -108,23 +109,45 @@ class SetLocationView(View):
         latitude = data.get('latitude')
         longitude = data.get('longitude')
 
+        # print(user_id, latitude, longitude)
+
+        # Validate required fields
         if not user_id or not latitude or not longitude:
             return JsonResponse({"error": "User ID, latitude, and longitude are required"}, status=400)
 
-        member = Member.objects.filter(user_id=user_id).first()
+        # Validate latitude and longitude formats
+        try:
+            latitude = float(latitude)
+            longitude = float(longitude)
+        except ValueError:
+            return JsonResponse({"error": "Invalid latitude or longitude format"}, status=400)
 
-        if not member:
+        # Retrieve member
+        try:
+            member = Member.objects.get(user_id=user_id)
+        except Member.DoesNotExist:
             return JsonResponse({"error": "User not found"}, status=404)
 
-        member_location = MemberLocation.objects.create(
-            member=member,
-            latitude=latitude,
-            longitude=longitude
-        )
+        # # Update or create member location
+        # member_location, created = MemberLocation.objects.update_or_create(
+        #     member=member,
+        #     defaults={'latitude': round(latitude, 6), 'longitude': round(longitude, 6)}
+        # )
+
+        # print(member)
+
+        member_location = MemberLocation.objects.filter(member=member).first()
+
+        if not member_location:
+            member_location = MemberLocation.objects.create(member=member, latitude=latitude, longitude=longitude)
+        else:
+            member_location.latitude = latitude
+            member_location.longitude = longitude
+
         member_location.save()
 
         return JsonResponse({"success": "Location saved"}, status=201)
-
+    
 
 class GetMembersAroundUser(View):
     def post(self, request):

@@ -13,7 +13,7 @@ const NotificationListener = () => {
 
             try {
                 // Send a POST request with user_id in the body
-                console.log("userId:", userId);
+                console.log("user")
                 const response = await axios.post('http://localhost:8000/api/notification/get_new/', {
                     user_id: userId  // Send user_id in the request body
                 });
