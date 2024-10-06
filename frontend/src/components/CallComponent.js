@@ -119,7 +119,7 @@ const CallComponent = () => {
         <p className="status-text">{isRecording ? "Go ahead, I'm listening" : "Ready"}</p>
       </div>
       <audio ref={audioRef} controls className="audio-controls" />
-      <p className="recording-status">{isRecording ? 'Recording in progress...' : 'Not recording'}</p>
+      <p className="recording-status">{isRecording ? 'Recording in progress...' : 'Responding'}</p>
     </div>
   );
 };
