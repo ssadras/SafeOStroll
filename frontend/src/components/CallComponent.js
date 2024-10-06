@@ -74,11 +74,10 @@ const CallComponent = () => {
 
   return (
     <div className="call-container">
-      <h2>Call AI (WebSocket Enabled)</h2>
-      <div className="circle-button" onClick={startRecording}>
+      <div className={`listening-circle ${isRecording ? 'active' : ''}`} onClick={startRecording}>
         {isRecording ? 'Stop' : 'Start'}
       </div>
-      <audio ref={audioRef} controls />
+      <audio ref={audioRef} controls className="audio-controls" />
     </div>
   );
 };

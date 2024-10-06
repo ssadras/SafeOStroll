@@ -3,7 +3,7 @@ from django.conf import settings
 import io
 
 
-def generate_response(input_text, previous_chat=None):
+def generate_response(input_text, previous_chats=None):
     # Generates a response from the OpenAI API
 
     try:
@@ -21,8 +21,8 @@ def generate_response(input_text, previous_chat=None):
                                           "campus police at (416) 978-2222"},
         ]
 
-        if previous_chat is not None and len(previous_chat) > 0:
-            messages.append(previous_chat)
+        if previous_chats is not None and len(previous_chats) > 0:
+            messages.extend(previous_chats)
 
         # Add the current user input as the next message in the conversation
         messages.append({"role": "user", "content": input_text})

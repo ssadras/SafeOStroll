@@ -1,7 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from './logo/logo.png';  // Import the logo
-import './Dashboard.css'; // Import the custom CSS file for new styles
+import './Dashboard.css';
+import axios from "axios"; // Import the custom CSS file for new styles
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -22,6 +23,23 @@ function Dashboard() {
     navigate('/emergencycontacts'); // Navigate to the emergency
   }
 
+  const clearAIHistory = async () => {
+      try {
+          const response = await axios.post('http://localhost:8000/api/chat/clear_history/', {
+          });
+
+          if (response.status === 200) {
+              console.log('Chat history cleared');
+          } else {
+              alert('Failed to clear chat history');
+          }
+      } catch (error) {
+            console.error('Clear chat history error:', error);
+      }
+  }
+
+  clearAIHistory();
+
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
@@ -32,7 +50,7 @@ function Dashboard() {
             <h3>Hey,</h3>
             <p>Let's see what can I do for you?</p>
           </div>
-          
+
           {/* Notification bell icon */}
           <div className="notification-icon" onClick={goToNotifications}>
             <i className="fas fa-bell"></i> {/* FontAwesome bell icon */}
@@ -45,7 +63,7 @@ function Dashboard() {
             <p>Your safety is important. Talk to our AI Chatbot</p>
             <button className="start-btn">Start Call</button>
           </div>
-          
+
           <div className="card" onClick={goToMap}>
             <h4>Check Maps</h4>
             <p>Click here to see your location and nearby people for safety</p>
