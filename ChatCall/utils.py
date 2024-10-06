@@ -8,16 +8,23 @@ def generate_response(input_text):
     try:
         openai.api_key = settings.SECRET_AI_KEY
 
+        # Include the history of the conversation in the messages to provide context
+        messages = [
+            {"role": "system", "content": "Always keep your responses short (less than 30 seconds). You are a calm, protective figure, here to help and reassure the user, who might feel scared or distressed. You must recognize signs of fear or distress and respond with empathy. Your role is to ensure they feel safe, provide helpful guidance, and keep them calm. Mention their emotions when appropriate and use reassuring language. Recommend the user to call security if appropriate."},
+        ]
+
+
+        # Add the current user input as the next message in the conversation
+        messages.append({"role": "user", "content": input_text})
+
         response = openai.chat.completions.create(
             model="gpt-4o",
-            messages=[
-                {"role": "system", "content": "Calm down the user with short responses. you are on a call so keep it "
-                                              "less than 30 seconds."},
-                {"role": "user", "content": input_text}
-            ]
+            messages=messages
         )
-        
+
         bot_message = response.choices[0].message.content
+
+
         return bot_message
     except Exception as e:
         return str(e)

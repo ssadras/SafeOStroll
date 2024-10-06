@@ -4,131 +4,111 @@ const CallComponent = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [socket, setSocket] = useState(null);
   const audioRef = useRef(null);
-  const silenceThreshold = 0.7; // Volume threshold to detect silence
-  const silenceDuration = 3000; // Duration (in ms) to consider as silence
+  const mediaRecorderRef = useRef(null);
+  const audioContextRef = useRef(null);
   const silenceTimeoutRef = useRef(null);
-  const mediaRecorderRef = useRef(null); // Use a ref to store the MediaRecorder
-
-  // Initialize WebSocket connection and start recording when the component mounts
+  const chunksRef = useRef([]);
+  
   useEffect(() => {
     const ws = new WebSocket('ws://localhost:8000/ws/call/');
+    
     ws.onopen = () => {
-      console.log('WebSocket connection opened');
+      console.log('WebSocket connection established');
+      setSocket(ws);
     };
 
-    ws.onerror = (error) => {
-      console.error('WebSocket error', error);
+    ws.onmessage = (event) => {
+      console.log('Received TTS audio from server');
+      playAudio(event.data);
     };
 
     ws.onclose = () => {
       console.log('WebSocket connection closed');
     };
 
-    setSocket(ws);
-
-    ws.onmessage = (event) => {
-      // Handle the audio response from the backend
-      playAudio(event.data);
-    };
-
-    // Start recording automatically when component mounts
-    startRecording();
-
     return () => {
-      ws.close(); // Cleanup WebSocket connection on component unmount
-      if (silenceTimeoutRef.current) clearTimeout(silenceTimeoutRef.current);
+      ws.close(); // Clean up WebSocket connection
     };
   }, []);
 
-  const startRecording = async () => {
-    if (isRecording) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-      return;
+  // Starts recording audio as soon as the component mounts
+  useEffect(() => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      startRecording();
     }
+  }, [socket]);
+
+  const startRecording = async () => {
+    if (isRecording) return;
 
     setIsRecording(true);
-
+    
     try {
-      // Capture audio from user's microphone
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const newMediaRecorder = new MediaRecorder(stream);
-      mediaRecorderRef.current = newMediaRecorder;
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
 
-      const chunks = [];
-
-      // Capture audio chunks
-      newMediaRecorder.ondataavailable = (event) => {
-        chunks.push(event.data);
-        console.log('Chunk received:', event.data);
-        
-        // Send each chunk to the server if the WebSocket is open
-        if (socket && socket.readyState === WebSocket.OPEN && isRecording) {
-          socket.send(event.data);
-          console.log('Chunk sent to WebSocket');
-        } else {
-          console.error('WebSocket is not open');
-        }
+      mediaRecorder.ondataavailable = (event) => {
+        chunksRef.current.push(event.data); // Collect audio data in chunks
       };
 
-      newMediaRecorder.onstop = () => {
-        const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm;codecs=opus' });
+        chunksRef.current = []; // Reset chunks for next recording
+
         if (socket && socket.readyState === WebSocket.OPEN) {
-          socket.send(audioBlob);
-          console.log('Final audio blob sent');
+          console.log('Sending audio data to server:', audioBlob);
+          socket.send(audioBlob); // Send audio to backend
         }
-        setIsRecording(false);
       };
 
-      newMediaRecorder.start();
-      console.log('Recording started');
+      mediaRecorder.start(1000); // Record in chunks of 1 second
 
-      // Set up silence detection
-      setupSilenceDetection(stream);
+      detectSilence(mediaRecorder, stream); // Monitor silence
     } catch (error) {
-      console.error('Error starting recording:', error);
+      console.error('Error accessing microphone:', error);
+      setIsRecording(false);
     }
   };
 
-  const setupSilenceDetection = (stream) => {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const analyser = audioContext.createAnalyser();
-    const source = audioContext.createMediaStreamSource(stream);
-    source.connect(analyser);
-    analyser.fftSize = 2048;
+  const detectSilence = (mediaRecorder, stream, silenceDelay = 3000, minDecibels = -60) => {
+    audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+    const analyser = audioContextRef.current.createAnalyser();
+    const microphone = audioContextRef.current.createMediaStreamSource(stream);
+    microphone.connect(analyser);
+    analyser.minDecibels = minDecibels;
+    
+    const data = new Uint8Array(analyser.frequencyBinCount);
 
-    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+    const detect = () => {
+      analyser.getByteFrequencyData(data);
 
-    const checkSilence = () => {
-      analyser.getByteFrequencyData(dataArray);
-      const averageVolume = dataArray.reduce((sum, value) => sum + value, 0) / dataArray.length / 255;
-      console.log('Average Volume:', averageVolume);
+      const isSilent = data.every((value) => value === 0);
 
-      if (averageVolume < silenceThreshold) {
-        if (!silenceTimeoutRef.current) {
-          silenceTimeoutRef.current = setTimeout(() => {
-            console.log('Silence detected, stopping recording...');
-            mediaRecorderRef.current.stop(); // Stop recording after the silence duration
-            silenceTimeoutRef.current = null;
-          }, silenceDuration);
-        }
+      if (isSilent) {
+        console.log('Silence detected...');
+        clearTimeout(silenceTimeoutRef.current);
+        silenceTimeoutRef.current = setTimeout(() => {
+          console.log('Silence duration exceeded, stopping recording...');
+          mediaRecorder.stop();
+          stream.getTracks().forEach(track => track.stop()); // Stop microphone access
+          audioContextRef.current.close();
+          setIsRecording(false);
+        }, silenceDelay);
       } else {
-        if (silenceTimeoutRef.current) {
-          clearTimeout(silenceTimeoutRef.current);
-          silenceTimeoutRef.current = null;
-        }
+        clearTimeout(silenceTimeoutRef.current); // Reset the silence timer if sound is detected
       }
 
-      requestAnimationFrame(checkSilence);
+      if (isRecording) requestAnimationFrame(detect); // Continue checking for silence
     };
 
-    checkSilence(); // Start checking for silence
+    detect();
   };
 
   const playAudio = (audioData) => {
-    const audioBlob = new Blob([audioData], { type: 'audio/webm' });
+    const audioBlob = new Blob([audioData], { type: 'audio/webm;codecs=opus' });
     const audioUrl = URL.createObjectURL(audioBlob);
-    
+
     if (audioRef.current) {
       audioRef.current.src = audioUrl;
       audioRef.current.play();
@@ -138,8 +118,8 @@ const CallComponent = () => {
   return (
     <div>
       <h2>Call AI (WebSocket Enabled)</h2>
-      {/* Recording starts automatically when navigated */}
       <audio ref={audioRef} controls />
+      <p>{isRecording ? 'Recording in progress...' : 'Not recording'}</p>
     </div>
   );
 };

@@ -24,6 +24,15 @@ body {
     width: 320px;
   }
   
+  /* Align the logo to center */
+.app-logo {
+    display: block; /* Make sure the image behaves as a block element */
+    margin-left: auto; /* Push the logo from the left */
+    margin-right: auto; /* Push the logo from the right */
+    margin-bottom: 20px; /* Add space between the logo and the form fields */
+    width: 100px; /* Adjust the width of the logo as needed */
+  }
+  
   .login-title {
     color: #fff;
     font-size: 24px;
