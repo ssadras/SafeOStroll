@@ -19,13 +19,12 @@ def generate_response(input_text):
 
         response = openai.chat.completions.create(
             model="gpt-4o",
-            messages=[
-                                              "less than 30 seconds."},
-                {"role": "user", "content": input_text}
-            ]
+            messages=messages
         )
-        
+
         bot_message = response.choices[0].message.content
+
+
         return bot_message
     except Exception as e:
         return str(e)
