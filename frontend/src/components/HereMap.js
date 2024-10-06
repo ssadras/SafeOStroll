@@ -148,13 +148,8 @@ const HereMap = () => {
         left: 0,
       }}
     >
-<<<<<<< HEAD
-      <h1 style={{ color: '#ff5959' }}>Here Map</h1>
-
-=======
       <h1 style={{ color: '#ff5959' }}>Map</h1>
       
->>>>>>> 01e624b8d43c025b830624bd825bf832483d0150
       {/* Include the Location Listener here */}
       <LocationListener />
 
