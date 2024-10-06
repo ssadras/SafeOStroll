@@ -101,7 +101,7 @@ const HereMap = () => {
         left: 0,
       }}
     >
-      <h1 style={{ color: '#ff5959' }}>Here Map</h1>
+      <h1 style={{ color: '#ff5959' }}>Map</h1>
       
       {/* Include the Location Listener here */}
       <LocationListener />
