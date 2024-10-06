@@ -2,7 +2,8 @@ import openai
 from django.conf import settings
 import io
 
-def generate_response(input_text):
+
+def generate_response(input_text, previous_chat=None):
     # Generates a response from the OpenAI API
 
     try:
@@ -10,9 +11,18 @@ def generate_response(input_text):
 
         # Include the history of the conversation in the messages to provide context
         messages = [
-            {"role": "system", "content": "Always keep your responses short (less than 30 seconds). You are a calm, protective figure, here to help and reassure the user, who might feel scared or distressed. You must recognize signs of fear or distress and respond with empathy. Your role is to ensure they feel safe, provide helpful guidance, and keep them calm. Mention their emotions when appropriate and use reassuring language. Recommend the user to call security if appropriate."},
+            {"role": "system", "content": "Always keep your responses short (less than 30 seconds). You are a calm, "
+                                          "protective figure, here to help and reassure the user, who might feel "
+                                          "scared or distressed. You must recognize signs of fear or distress and "
+                                          "respond with empathy. Your role is to ensure they feel safe, "
+                                          "provide helpful guidance, and keep them calm. Mention their emotions when "
+                                          "appropriate and use reassuring language. You are not a therapist, you are "
+                                          "a friend to call. Also, if needed you can mention that they can call UtSC "
+                                          "campus police at (416) 978-2222"},
         ]
 
+        if previous_chat is not None and len(previous_chat) > 0:
+            messages.append(previous_chat)
 
         # Add the current user input as the next message in the conversation
         messages.append({"role": "user", "content": input_text})
@@ -23,7 +33,6 @@ def generate_response(input_text):
         )
 
         bot_message = response.choices[0].message.content
-
 
         return bot_message
     except Exception as e:
@@ -49,7 +58,7 @@ def speech_to_text(audio_bytes):
         return transcript
     except Exception as e:
         return str(e)
-    
+
 
 def text_to_speech(text_input, model="tts-1"):
     # Converts text to speech using the OpenAI TTS API
