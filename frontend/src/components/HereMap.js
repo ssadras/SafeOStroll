@@ -95,7 +95,33 @@ const HereMap = () => {
   };
 
   const handleDistress = () => {
-    console.log('Distress');
+    console.log('Distress button clicked');
+    setLoading(true);
+
+    // call the backend API to send distress signal with post request with user_id as the payload
+    fetch('http://localhost:8000/api/member/ask-help-nearby-members/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user_id: userId }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('Distress signal sent successfully');
+          alert('Distress signal sent successfully');
+        } else {
+          console.error('Failed to send distress signal');
+          alert('Failed to send distress signal');
+        }
+      })
+      .catch((error) => {
+        console.error('Error sending distress signal:', error);
+        alert('Error sending distress signal');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
