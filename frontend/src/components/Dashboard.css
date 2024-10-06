@@ -85,27 +85,54 @@ body {
     flex-direction: column;
     gap: 20px;
     align-items: center;
-    width: 100%;
+    width: 100%; /* Full width for the action cards */
+    padding: 0; /* Ensure no extra padding */
+    margin: 0; /* Ensure no margin */
 }
 
 .card {
-    background-color: #292948;
-    border-radius: 15px;
+    background: linear-gradient(135deg, #6a82fb, #fc5c7d); /* New gradient colors for a vibrant look */
+    border-radius: 20px; /* Slightly more rounded corners */
     padding: 20px;
     text-align: left;
     position: relative;
     transition: all 0.3s ease-in-out;
-    width: 80%;
+    width: 100%; /* Set to 100% to fill the parent container */
     max-width: 400px;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3); /* Slightly stronger shadow */
     overflow: hidden;
-    border: 2px solid transparent;
+}
+
+.highlight-card {
+    transition: background-color 0.3s ease; /* Smooth transition for background color */
+}
+
+.highlight-card:hover {
+    background-color: #ff6b81; /* Change to a different color on hover */
 }
 
 .card:hover {
-    background-color: #3b3b58;
+    background: linear-gradient(135deg, #fc5c7d, #6a82fb); /* Reverse gradient on hover for dynamic effect */
     cursor: pointer;
-    box-shadow: 0px 5px 25px rgba(0, 0, 0, 0.4);
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5); /* More pronounced shadow on hover */
+    transform: translateY(-2px); /* Subtle lift effect on hover */
+}
+
+.card h4 {
+    font-size: 1.25rem; /* Larger title font size */
+    margin: 0 0 10px; /* Space below title */
+    color: #ffffff; /* White text for visibility */
+}
+
+.card p {
+    font-size: 1rem; /* Standard paragraph size */
+    color: #ddd; /* Lighter color for contrast */
+    line-height: 1.5; /* Improved line height for readability */
+}
+
+.card .card-content {
+    margin-top: 10px; /* Space above content */
+    font-weight: 300; /* Lighter weight for content text */
 }
 
 .voice-card {
