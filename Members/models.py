@@ -42,5 +42,7 @@ class MemberLocation(models.Model):
     longitude = models.FloatField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
+    objects = MemberLocationManager()
+
     def __str__(self):
         return f"{self.member.full_name} - {self.latitude}, {self.longitude}"

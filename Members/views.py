@@ -151,9 +151,14 @@ class SetLocationView(View):
 
 class GetMembersAroundUser(View):
     def post(self, request):
-        # get latitude and longitude from member last location (Logged in user)
-        user = request.user
-        member = Member.objects.filter(user_id=user.id).first()
+        if request.POST:
+            data = request.POST
+        else:
+            data = json.loads(request.body.decode('utf-8'))
+
+        user_id = data.get('user_id')
+
+        member = Member.objects.filter(user_id=user_id).first()
         member_location = MemberLocation.objects.filter(member_id=member.id).order_by('-timestamp').first()
 
         if not member_location:
@@ -164,6 +169,8 @@ class GetMembersAroundUser(View):
 
         # get all members around the user
         members = MemberLocation.objects.get_members_in_distance(latitude, longitude, 0.01)
+
+        print(members)
 
         # return members (Hide sensitive information)
         members_data = []
