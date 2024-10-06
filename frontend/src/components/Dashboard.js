@@ -25,7 +25,7 @@ function Dashboard() {
 
   const clearAIHistory = async () => {
       try {
-          const response = await axios.post('http://localhost:8000/api/chat/clear_chat_history/', {
+          const response = await axios.post('http://localhost:8000/api/chat/clear_history/', {
           });
 
           if (response.status === 200) {
